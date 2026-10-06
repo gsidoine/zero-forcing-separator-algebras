@@ -12,7 +12,7 @@ Guillaume Sidoine — ORCID 0009-0005-4525-1182
 
 ## Version
 
-0.6.0
+1.0.0
 
 ## Suggested resource type
 
