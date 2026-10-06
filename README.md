@@ -6,15 +6,15 @@ This repository contains the manuscript source, reference implementation, exact 
 
 The paper develops an exact finite interface for the zero-forcing polynomial across an arbitrary labelled separator. The main structural ingredients are a fort-based atomic boundary language, join closure, chain compression by Möbius cancellation, realization of every chain mode by finite simple graph gadgets, and an exact connection-rank formula. The first full connection ranks are
 
-\[
+$$
 r_0=1,\qquad r_1=4,\qquad r_2=60.
-\]
+$$
 
 The one-terminal specialization recovers the four-dimensional algebra
 
-\[
+$$
 \mathbb Q(x)[s,a]/(s^2-s,a^2),
-\]
+$$
 
 and gives explicit transfer algorithms for trees, bounded blocks, cliques, cycles, and block-cactus graphs.
 
