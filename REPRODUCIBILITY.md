@@ -109,7 +109,7 @@ See `BUILD.md`.
 
 ## Public archival release
 
-The package is complete as a journal supplement. Public repository/release identifiers and an archival DOI cannot be generated truthfully without the author's chosen repository/archive. When those identifiers exist, deposit this exact checksum-verified package and add the resulting metadata to the journal record/CITATION file without changing the mathematical certificate files.
+The package is complete as a journal supplement. The public repository is https://github.com/gsidoine/zero-forcing-separator-algebras. The v1.0.0 archival release has the reserved Zenodo DOI [10.5281/zenodo.23183837](https://doi.org/10.5281/zenodo.23183837). Publish the Zenodo record only after uploading the checksum-verified final snapshot; the mathematical certificate files must not be altered between verification and deposition.
 
 
 ## Public repository

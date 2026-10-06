@@ -1,4 +1,7 @@
-FINAL PRE-SUBMISSION VALIDATION — 2026-10-06
+FINAL DOI-AWARE PRE-SUBMISSION VALIDATION — 2026-10-06
+
+Zenodo archival DOI
+10.5281/zenodo.23183837
 
 separator rank certificate
 certificate: separator_rank_certificate.json
@@ -27,11 +30,14 @@ separator algebra audits
   compatibility join-closure checks: 8192
 all separator audits passed
 
-PDF preflight:
-PDF: /mnt/data/final_2026_10_06/zero_forcing_separator_algebras_submission_package_editorial_2026-10-05/zero_forcing_separator_algebras.pdf
+PDF preflight
+PDF: zero_forcing_separator_algebras.pdf
 Pages: 46
 Encrypted: False
 Openable (PyMuPDF): True
 Likely scanned: False
 XFA present: False
 
+The DOI/ORCID/repository edits are bibliographic only. No theorem statement, proof, certificate, algorithm, or numerical result was changed in this pass.
+
+Final archival metadata pass: DOI 10.5281/zenodo.23183837; manuscript/docs CC BY 4.0; software MIT; no mathematical content changed.

@@ -19,4 +19,5 @@ The intended first archival release is `v1.0.0`, after the final bibliographic e
 - Added an AI-assistance disclosure.
 - Re-ran the separator rank, cycle automaton, and separator-realization audits.
 - Moved the ORCID into the final author address and shortened the affiliation to "Independent researcher".
+- Added the reserved Zenodo archival DOI `10.5281/zenodo.23183837` to the manuscript and repository metadata.
 

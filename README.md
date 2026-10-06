@@ -81,13 +81,13 @@ See [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md) for the complete audit procedure.
 
 ## Citation
 
-GitHub can read the repository's `CITATION.cff`. Repository: https://github.com/gsidoine/zero-forcing-separator-algebras. A permanent archive DOI will be added after the first archival release. The article's arXiv identifier will also be added once assigned.
+GitHub can read the repository's `CITATION.cff`. Repository: https://github.com/gsidoine/zero-forcing-separator-algebras. Archival release: [10.5281/zenodo.23183837](https://doi.org/10.5281/zenodo.23183837). The article's arXiv identifier will also be added once assigned.
 
 ## License
 
 The software and computational verification material are released under the MIT License; see `LICENSE`.
 
-The manuscript is not covered by the MIT License. See `LICENSE-PAPER.md`.
+The manuscript and scholarly documentation are released under CC BY 4.0; see `LICENSE-PAPER.md`.
 
 ## Author
 
@@ -97,4 +97,4 @@ ORCID: 0009-0005-4525-1182
 
 ## Current release candidate
 
-The 2026-10-06 snapshot contains the final pre-submission manuscript, including the public repository link, the final literature-positioning edits, and the AI-assistance disclosure. The certificate and audit results are unchanged.
+The 2026-10-06 v1.0.0 snapshot contains the final pre-submission manuscript, the public repository link, the Zenodo archival DOI `10.5281/zenodo.23183837`, the final literature-positioning edits, and the AI-assistance disclosure. The certificate and audit results are unchanged.

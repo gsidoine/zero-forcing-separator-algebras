@@ -11,3 +11,8 @@ date-released: 2026-10-06
 license: MIT
 
 repository-code: "https://github.com/gsidoine/zero-forcing-separator-algebras"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.23183837"
+    description: "Zenodo archival release"
+url: "https://doi.org/10.5281/zenodo.23183837"

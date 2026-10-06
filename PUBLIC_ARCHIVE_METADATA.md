@@ -1,6 +1,6 @@
 # Public computational-archive metadata
 
-Prepared: 2026-10-04
+Prepared: 2026-10-06
 
 ## Suggested archive title
 
@@ -30,16 +30,19 @@ zero forcing; graph polynomial; separator; connection matrix; graph algebra; for
 
 Software: MIT (see `LICENSE`).
 
-The manuscript remains the author's scholarly work; if the archive service asks for a separate content license for the PDF/TeX, choose the author's intended scholarly-content license rather than inferring it from the software license.
+Manuscript and scholarly documentation: Creative Commons Attribution 4.0 International (CC BY 4.0), see `LICENSE-PAPER.md`.
 
 ## Related identifier to add after arXiv announcement
 
 Add the final arXiv identifier as an “is supplement to” / “is related to” relation if the archive supports related identifiers.
 
-## DOI / URL workflow
+## DOI / archival URL
 
-The public repository is https://github.com/gsidoine/zero-forcing-separator-algebras. After creating the first immutable release, record its tag/commit and archival DOI/URL. If you then insert that identifier into the manuscript or `CITATION.cff`, rebuild the PDF/package and regenerate `SHA256SUMS.txt`; otherwise leave the deposited archive immutable and supply the DOI in journal/arXiv metadata only.
+Public repository: https://github.com/gsidoine/zero-forcing-separator-algebras
 
+Zenodo archival DOI: [10.5281/zenodo.23183837](https://doi.org/10.5281/zenodo.23183837).
+
+This DOI was reserved for the v1.0.0 computational archive. Publish the Zenodo record only after uploading the checksum-verified final snapshot.
 
 ## Public repository
 
