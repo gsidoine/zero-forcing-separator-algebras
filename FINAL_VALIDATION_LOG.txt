@@ -1,0 +1,24 @@
+FINAL VALIDATION LOG — editorial revision 2026-10-05
+
+Manuscript
+- LaTeX source compiled successfully with pdfLaTeX in three passes.
+- PDF pages: 46.
+- PDF opens normally, is unencrypted, and is text-based.
+- All cross-references resolved after the final pass.
+- Rendered all 46 pages at 120 dpi; contact-sheet inspection found no clipping, black boxes, or broken layout.
+- The abstract, introduction, verification section, discussion, and appendix were rewritten/compressed; the central mathematical theorem and proof sections were retained.
+
+Independent mathematical checks rerun after the editorial revision
+- separator-rank certificate: VERIFIED (q=2 ranks 52, 44, 16, full rank 60).
+- cycle automaton certificate: VERIFIED (100 generated matrices, 32 quotient states, 496 distinguishing pairs).
+- separator audit: PASSED (chain counts, q=2 worked example, all 52 q=2 chain realizations, sampled q=3 realizations, 8192 join-closure checks).
+- independent extended audit: ALL INDEPENDENT CHECKS PASSED; rank-four connection minor determinant = 4 x^6 (x+1)^2.
+
+Editorial changes
+- article reduced from 53 to 46 pages;
+- noncentral closed-form examples removed from the main article;
+- printed 32-state automaton table removed (the complete certificate remains in the supplement);
+- general bounded-width, verification, discussion, and data/code prose shortened;
+- no central theorem statement or central proof was weakened or removed.
+
+The package checksum manifest was regenerated after these changes.

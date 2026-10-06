@@ -1,0 +1,3011 @@
+\documentclass[11pt,reqno]{amsart}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools,mathrsfs}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage[nameinlink,capitalize,noabbrev]{cleveref}
+\usepackage{aliascnt}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!45!black,
+  citecolor=green!35!black,
+  urlcolor=blue!55!black,
+  pdftitle={Separator algebras and transfer theory for the zero-forcing polynomial},
+  pdfauthor={Guillaume Sidoine}
+}
+
+\newtheorem{theorem}{Theorem}[section]
+\newaliascnt{lemma}{theorem}
+\newtheorem{lemma}[lemma]{Lemma}
+\aliascntresetthe{lemma}
+\newaliascnt{proposition}{theorem}
+\newtheorem{proposition}[proposition]{Proposition}
+\aliascntresetthe{proposition}
+\newaliascnt{corollary}{theorem}
+\newtheorem{corollary}[corollary]{Corollary}
+\aliascntresetthe{corollary}
+\newaliascnt{claim}{theorem}
+\newtheorem{claim}[claim]{Claim}
+\aliascntresetthe{claim}
+\theoremstyle{definition}
+\newaliascnt{definition}{theorem}
+\newtheorem{definition}[definition]{Definition}
+\aliascntresetthe{definition}
+\newaliascnt{example}{theorem}
+\newtheorem{example}[example]{Example}
+\aliascntresetthe{example}
+\newaliascnt{remark}{theorem}
+\newtheorem{remark}[remark]{Remark}
+\aliascntresetthe{remark}
+
+\crefname{theorem}{Theorem}{Theorems}
+\Crefname{theorem}{Theorem}{Theorems}
+\crefname{lemma}{Lemma}{Lemmas}
+\Crefname{lemma}{Lemma}{Lemmas}
+\crefname{proposition}{Proposition}{Propositions}
+\Crefname{proposition}{Proposition}{Propositions}
+\crefname{corollary}{Corollary}{Corollaries}
+\Crefname{corollary}{Corollary}{Corollaries}
+\crefname{definition}{Definition}{Definitions}
+\Crefname{definition}{Definition}{Definitions}
+\crefname{example}{Example}{Examples}
+\Crefname{example}{Example}{Examples}
+\crefname{remark}{Remark}{Remarks}
+\Crefname{remark}{Remark}{Remarks}
+
+\newcommand{\Zpoly}{\mathcal Z}
+\newcommand{\cl}{\operatorname{cl}}
+\newcommand{\Pstate}{\mathsf P}
+\newcommand{\Astate}{\mathsf A}
+\newcommand{\Dalg}{\mathbb D}
+\newcommand{\N}{\mathbb N}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\one}{\mathbf 1}
+
+\title[Separator algebras for the zero-forcing polynomial]
+{Separator algebras and transfer theory\\
+for the zero-forcing polynomial}
+
+\author{Guillaume Sidoine}
+\address{Independent researcher, Mauritius}
+\thanks{ORCID: 0009-0005-4525-1182.}
+
+\subjclass[2020]{05C31, 05C50, 05C76, 05C85, 68R10}
+\keywords{zero forcing, graph polynomial, separator, connection matrix, graph algebra, fort, transfer algebra, block decomposition}
+
+\begin{document}
+
+\begin{abstract}
+For a finite graph $G$, let
+\[
+  \Zpoly(G;x)=\sum_k z(G;k)x^k,
+\]
+where $z(G;k)$ is the number of zero-forcing sets of size $k$.  Boyer et al.
+asked for splitting formulas for this polynomial over cut vertices and
+separating sets.  We give such a formula for every finite labeled separator.
+
+The construction uses forts.  For a separator of order $q$, a local obstruction
+is encoded by a join-closed family of words in
+$\{0,1,\mathsf I\}^q\setminus\{0^q\}$.  We give the exact rule for gluing two
+local families and express the boundary choice as a transversal problem on the
+resulting fort traces.  The corresponding connection kernels admit a M\"obius
+compression indexed by chains.  Every chain state is realized by a finite
+simple graph, so the finite chain kernel has the same rank as the infinite
+zero-forcing connection matrix.
+
+For an independent boundary this rank is the number $c_q$ of chains in
+$C_3^q\setminus\{0^q\}$.  In particular
+$c_1=4$, $c_2=52$, $c_3=1636$, and
+$\log c_q=2q\log q+O(q)$.  With arbitrary boundary edges the first full ranks
+are $r_0=1$, $r_1=4$, and $r_2=60$, the last value certified by an exact finite
+calculation.  At one terminal the theory reduces to
+$\mathbb Q(x)[s,a]/(s^2-s,a^2)$; the associated transfers give explicit
+quadratic coefficient-operation algorithms for trees and block-cactus graphs.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+Zero forcing starts from a set of blue vertices.  A blue vertex may force its
+unique white neighbour, and an initial set is zero forcing when repeated legal
+forces colour the whole graph.  The parameter arose from minimum-rank and
+maximum-nullity questions for symmetric matrices described by a graph
+\cite{AIM2008}.
+
+Boyer, Brimkov, English, Ferrero, Keller, Kirsch, Phillips, and Reinhart
+\cite{BoyerEtAl2019} introduced
+\[
+  \Zpoly(G;x)=\sum_{k=0}^{|V(G)|}z(G;k)x^k,
+\]
+where $z(G;k)$ counts zero-forcing sets of size $k$.  They asked, among other
+things, for splitting formulas based on cut vertices or separating sets.  We
+answer that question for separators of arbitrary finite order.
+
+We use connection matrices to state the answer.  Two $q$-boundaried graphs are
+glued by identifying vertices with the same boundary label, and the entry of
+the connection matrix is the zero-forcing polynomial of the glued graph.  The
+rank records how much linear information must pass through the boundary.  This
+language is standard in graph algebras \cite{Lovasz2006,KotekMakowsky2014}; in
+particular, general finite-rank and bilinear-reduction theorems are already
+known for suitable definable graph polynomials.  Our point is more specific:
+we give the zero-forcing interface explicitly, reduce it to a finite kernel,
+and determine that kernel exactly enough to recover the connection rank.
+
+The static obstruction is a fort.  A nonempty set $F$ is a fort if no vertex
+outside $F$ has exactly one neighbour in $F$, and a set is zero forcing if and
+only if it meets every fort \cite{AIM2008}.  The fort hypergraph and its
+transversals have been studied in their own right
+\cite{CameronHogbenEtAl2026}.  Recent work also counts inclusion-minimal forts,
+including the linear-time tree algorithm of Abiad and Ghasemi Nezhad
+\cite{BeckerEtAl2025,CameronLi2025,DatKenter2026,AbiadGhasemiNezhad2026}.
+That is a different counting problem.  Here the object being counted is every
+subset that meets every fort, with its cardinality retained.
+
+Let $B$ be a separator of order $q$.  We impose the fort condition away from
+$B$ and call the resulting object a prefort.  At a boundary vertex only three
+pieces of information matter: the vertex lies in the prefort, it lies outside
+and has no interior prefort neighbour, or it lies outside and has exactly one.
+Counts at least two are already safe.  The resulting atoms lie in
+\[
+  P_q=\{0,1,\mathsf I\}^q\setminus\{0^q\}.
+\]
+For a fixed interior initial set the atom family is join closed in the product
+order $0<1<\mathsf I$.  If two atoms have the same trace $T$ and the glued
+boundary has edge set $E$, they form a fort exactly when
+\[
+  d_E(i,T)+\alpha_i+\beta_i\ne1\qquad(i\notin T).
+\]
+The selected boundary vertices must then meet every trace produced by a
+compatible pair.  This is the splitting formula.
+
+The local state space is large, but its linear content is smaller.  A M\"obius
+cancellation on finite join-semilattices leaves only chains.  We prove that
+every chain state is realized by a finite simple graph and use one-terminal
+selection projectors to isolate its prescribed interior set.  Hence no mode in
+the compressed kernel is formal only.  If $M_E(x)$ denotes the chain kernel
+for boundary edge set $E$, then
+\[
+  r_q=\sum_{R\subseteq\binom{[q]}2}
+  \operatorname{rank}_{\mathbb Q(x)}
+  \left(\sum_{E\supseteq R}(-1)^{|E\setminus R|}M_E(x)\right).
+\]
+For an independent boundary the rank is the number $c_q$ of chains in
+$C_3^q\setminus\{0^q\}$.  We obtain an explicit formula for $c_q$ and
+\[
+ c_0=1,\qquad c_1=4,\qquad c_2=52,\qquad c_3=1636,
+ \qquad \log c_q=2q\log q+O(q).
+\]
+With arbitrary boundary edges, the first nontrivial full value beyond one
+terminal is $r_2=60$; the finite rank calculation is supplied with an
+independent certificate and verifier.
+
+At $q=1$ the general construction collapses to four responses: a rooted piece
+may or may not supply the root, and may or may not need the root to spend its
+single force inside the piece.  The resulting algebra is
+\[
+  \mathbb Q(x)[s,a]/(s^2-s,a^2).
+\]
+This small case is useful computationally.  It gives an exact edge transfer,
+a quadratic tree algorithm, block transfers, a linear clique transfer, and a
+finite cycle recognizer.  For block-cactus graphs the full polynomial is
+computed in $O(n^2)$ coefficient operations.  General tractability of that
+class also follows from bounded clique-width and MSO machinery; the value of
+the transfer here is the explicit state system and its concrete arithmetic
+bound.
+
+The first part of the paper develops the rooted and separator algebras.  The
+second gives the explicit tree, block, clique, and cycle transfers.  Finite
+computations used for $r_2$ and for the reduced cycle automaton are separated
+from the symbolic proofs and supplied with independent verifiers.
+
+\section{Preliminaries and restricted closure}\label{sec:preliminaries}
+
+All graphs are finite and simple.  Let $G=(V,E)$ and let $S\subseteq V$.  Vertices of $S$ are initially blue and the remaining vertices are white.  The \emph{zero-forcing colour-change rule} is
+\[
+  u\to w
+  \quad\text{if $u$ is blue and $w$ is the unique white neighbour of $u$.}
+\]
+A set $S$ is a \emph{zero-forcing set} if a sequence of legal forces colours every vertex.  We write $z(G;k)$ for the number of zero-forcing sets of cardinality $k$, and
+\[
+  \Zpoly(G;x)=\sum_{k=0}^{|V|}z(G;k)x^k.
+\]
+For a non-empty graph the constant coefficient is zero, but allowing $k=0$ is convenient for products and for the empty graph.
+
+We shall repeatedly use the elementary observation that a vertex performs at most one force.
+
+\begin{lemma}\label{lem:one-force}
+Every vertex is the forcing vertex in at most one step of a zero-forcing process.
+\end{lemma}
+
+\begin{proof}
+If $u$ forces $w$, then immediately after the force every neighbour of $u$ is blue.  Since blue vertices never become white, $u$ can never again have a white neighbour.
+\end{proof}
+
+Let $(H,r)$ be a rooted graph.  We require a closure operation in which the root is prohibited from acting.
+
+\begin{definition}
+Let $Q\subseteq V(H)$.  For $X\subseteq V(H)$, the \emph{$Q$-restricted closure} of $X$, denoted
+\[
+  \cl_H^{\neg Q}(X),
+\]
+is the terminal blue set obtained by exhausting legal forces while no vertex of $Q$ is permitted to act as a forcing vertex.  Vertices of $Q$ may nevertheless be forced.  For a singleton $Q=\{r\}$ we write $\cl_H^{\neg r}(X)$.
+\end{definition}
+
+The next lemma justifies the notation.
+
+\begin{lemma}[Confluence and monotonicity]\label{lem:closure}
+The set $\cl_H^{\neg Q}(X)$ is independent of the order in which legal $Q$-restricted forces are applied.  Moreover,
+\[
+  X\subseteq Y
+  \quad\Longrightarrow\quad
+  \cl_H^{\neg Q}(X)\subseteq \cl_H^{\neg Q}(Y).
+\]
+\end{lemma}
+
+\begin{proof}
+For $X\subseteq V(H)$ define
+\[
+  F_Q(X)=X\cup
+  \left\{
+    w:\text{there exists }u\in X\setminus Q
+    \text{ with }N_H(u)\setminus X=\{w\}
+  \right\}.
+\]
+The map $F_Q$ is monotone.  Indeed, let $X\subseteq Y$ and suppose that $w\in F_Q(X)\setminus Y$.  Then some $u\in X\setminus Q$ has $w$ as its unique neighbour outside $X$.  Since $w\notin Y$, enlarging $X$ to $Y$ does not remove $w$ and cannot introduce a new neighbour outside the blue set.  Hence $w$ remains the unique neighbour of $u$ outside $Y$, so $w\in F_Q(Y)$.
+
+Since $V(H)$ is finite, iteration of $F_Q$ from $X$ reaches the least fixed point of $F_Q$ containing $X$.  Every legal sequential $Q$-restricted forcing process remains inside this fixed point.  Conversely, the vertices introduced at each synchronous iterate may be added in any order by legal $Q$-restricted forces.  The terminal set is therefore unique, and monotonicity follows by iterating the monotone map $F_Q$.
+\end{proof}
+
+For $S\subseteq V(H)\setminus\{r\}$ put
+\[
+  C^-(S)=\cl_H^{\neg r}(S),
+  \qquad
+  C^+(S)=\cl_H^{\neg r}(S\cup\{r\}).
+\]
+The superscript records whether the root is initially white or blue.
+
+\begin{lemma}[Monotone simulation of a forcing sequence]\label{lem:sequence-simulation}
+Let $B\subseteq B'$ be blue sets in a graph, and let
+\[
+  u_1\to w_1,\ldots,u_t\to w_t
+\]
+be a legal forcing sequence from $B$, with all forcing vertices outside a fixed
+forbidden set $Q$.  Starting from $B'$, scan the same list in order and perform
+$u_i\to w_i$ whenever $w_i$ is still white, omitting the step otherwise.  Every
+performed step is legal, no forcing vertex lies in $Q$, and the final blue set
+contains the final blue set obtained from $B$.
+\end{lemma}
+
+\begin{proof}
+Induct on the list.  At a step $u\to w$, if $w$ is already blue there is
+nothing to prove.  Otherwise the current larger blue set contains the current
+smaller one.  The vertex $u$ has no white neighbour in the smaller process
+other than $w$; enlarging the blue set cannot create a new white neighbour.
+The vertex $w$ remains the unique white neighbour of $u$, so the step is legal.
+\end{proof}
+
+\begin{lemma}[Source-closure identity]\label{lem:source-closure}
+If $r\in C^-(S)$, then
+\[
+  C^-(S)=C^+(S).
+\]
+\end{lemma}
+
+\begin{proof}
+Monotonicity gives $C^-(S)\subseteq C^+(S)$.  The set $C^-(S)$ is an
+$r$-restricted fixed point and, because it contains $r$, it contains
+$S\cup\{r\}$.  Since $C^+(S)$ is the least such fixed point, the reverse
+inclusion follows.
+\end{proof}
+
+\section{The four rooted response states}\label{sec:states}
+
+Fix a rooted graph $(H,r)$ and a set $S\subseteq V(H)\setminus\{r\}$.
+
+\begin{definition}[Source indicator]
+The source indicator of $S$ is
+\[
+  \sigma_r(S)=
+  \begin{cases}
+    1,&r\in C^-(S),\\
+    0,&r\notin C^-(S).
+  \end{cases}
+\]
+Accordingly, $\sigma_r(S)=1$ precisely when the non-root vertices can force an initially white root without using the root as a forcing vertex.
+\end{definition}
+
+We next classify the successful behaviour when the root is initially blue.
+
+\begin{definition}[Passive, active, and blocked states]\label{def:states}
+The set $S$ is called
+\begin{enumerate}[label=\textnormal{(\roman*)}]
+\item \emph{passive} if $C^+(S)=V(H)$;
+\item \emph{active} if $C^+(S)\ne V(H)$ and there is a vertex $u$ such that
+  \[
+    N_H(r)\setminus C^+(S)=\{u\}
+  \]
+  and
+  \[
+    \cl_H^{\neg r}\bigl(C^+(S)\cup\{u\}\bigr)=V(H);
+  \]
+\item \emph{blocked} otherwise.
+\end{enumerate}
+\end{definition}
+
+A passive set completes the graph without a force by the root.  An active set completes the graph after the root performs its unique available force.  A blocked set cannot be completed even if the root is initially blue.
+
+For $\eta\in\{0,1\}$ define
+\begin{align*}
+  P_\eta(H,r;x)
+  &=\sum_{\substack{S\subseteq V(H)\setminus\{r\}\\
+                     S\text{ passive},\ \sigma_r(S)=\eta}}
+      x^{|S|},\\
+  A_\eta(H,r;x)
+  &=\sum_{\substack{S\subseteq V(H)\setminus\{r\}\\
+                     S\text{ active},\ \sigma_r(S)=\eta}}
+      x^{|S|}.
+\end{align*}
+We suppress $(H,r;x)$ when no ambiguity can arise, and write
+\[
+  P=P_0+P_1,
+  \qquad
+  A=A_0+A_1.
+\]
+Blocked sets will not enter the transfer algebra because they cannot occur in a successful global configuration.
+
+\section{Root normal form}\label{sec:normal-form}
+
+The following normalization statement makes precise the reordering used
+throughout the paper.
+
+\begin{lemma}[Root normalization]\label{lem:root-normalization}
+Let $(H,r)$ be rooted, let $S\subseteq V(H)\setminus\{r\}$, and suppose that
+$r$ is initially blue.  Every successful forcing sequence can be replaced by
+one of the form
+\[
+  \text{$r$-restricted saturation}
+  \ ;\ 
+  \text{at most one force by $r$}
+  \ ;\ 
+  \text{$r$-restricted saturation}.
+\]
+More precisely, either $C^+(S)=V(H)$, or there is a unique vertex
+$u\in N_H(r)\setminus C^+(S)$ such that $r\to u$ is legal from $C^+(S)$ and
+\[
+  \cl_H^{\neg r}\bigl(C^+(S)\cup\{u\}\bigr)=V(H).
+\]
+\end{lemma}
+
+\begin{proof}
+Fix a successful sequence.  If the root is never used, the entire sequence is
+$r$-restricted, and confluence gives $C^+(S)=V(H)$.
+
+Otherwise let $r\to u$ be the (necessarily unique) force by $r$.  Replace the
+prefix preceding this step by any restricted sequence which saturates
+$S\cup\{r\}$ to $C^+(S)$.  The blue set has only increased.  If $u$ is still
+white, every other neighbour of $r$ was blue before the original force and is
+therefore blue in $C^+(S)$, so $r\to u$ remains legal.  If $u$ has already
+become blue, omit the force by $r$.  In either case, apply
+\cref{lem:sequence-simulation} to the remaining suffix.  Since $r$ cannot
+force a second time by \cref{lem:one-force}, every retained force in the
+suffix is restricted.  The resulting sequence has the asserted form and
+still colours all vertices.
+\end{proof}
+
+\begin{theorem}[Root normal form]\label{thm:normal-form}
+Let $(H,r)$ be a rooted graph and let $S\subseteq V(H)\setminus\{r\}$.
+\begin{enumerate}[label=\textnormal{(\alph*)}]
+\item The set $S\cup\{r\}$ is zero forcing in $H$ if and only if $S$ is passive or active.
+\item The set $S$ is zero forcing in $H$ if and only if $S$ is passive or active and $\sigma_r(S)=1$.
+\end{enumerate}
+Consequently,
+\begin{equation}\label{eq:normal-form}
+  \boxed{
+  \Zpoly(H;x)=(1+x)(P+A)-(P_0+A_0).
+  }
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Part~(a) is exactly \cref{lem:root-normalization} together with
+\cref{def:states}.  For part~(b), a successful process with $r$ initially
+white must first colour $r$ by a force whose forcing vertex is not $r$; hence
+$r\in C^-(S)$.  Conversely, if $\sigma_r(S)=1$, execute a restricted sequence
+which colours $r$.  By \cref{lem:source-closure}, the resulting restricted
+closure is $C^+(S)$, after which the passive or active completion from
+part~(a) applies.
+
+Sets containing $r$ contribute $x(P+A)$, whereas sets excluding $r$ contribute
+$P_1+A_1=(P+A)-(P_0+A_0)$.  This proves \eqref{eq:normal-form}.
+\end{proof}
+
+\begin{remark}
+The four states record precisely the two pieces of information which can cross
+a one-vertex boundary: whether the rooted component consumes the root's unique
+force, and whether it can supply the root when the root is initially white.
+\end{remark}
+
+\section{Rooted one-point unions and dual numbers}\label{sec:wedge}
+
+Let $(H,r)$ and $(K,s)$ be rooted graphs with otherwise disjoint vertex sets.  Their \emph{rooted one-point union}, or \emph{wedge}, is the rooted graph
+\[
+  (H,r)\vee(K,s)
+\]
+obtained by identifying $r$ and $s$; the identified vertex is the root.
+
+\begin{proposition}[Set-level wedge composition]\label{prop:wedge-set}
+Let $S_H\subseteq V(H)\setminus\{r\}$ and
+$S_K\subseteq V(K)\setminus\{s\}$, and identify $r=s$ to a common root $v$.
+Then the following hold.
+\begin{enumerate}[label=\textnormal{(\roman*)}]
+\item The wedge is passive exactly when both component sets are passive.
+\item It is active exactly when one component set is active and the other is passive.
+\item Every other pair of component states is blocked.
+\item Its source indicator is the Boolean disjunction of the two component source indicators.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+With $v$ initially blue and forbidden from forcing, the non-root vertices in
+$H$ and $K$ have no neighbours across the separator.  Thus their restricted
+closures are computed independently.  A passive component completes without
+using $v$; an active component leaves one internal white neighbour which only
+$v$ can initially force; and a blocked component cannot be completed even
+when $v$ is supplied and allowed its one force.  It follows that a blocked
+component cannot be rescued by activity on the other side, that two active
+components cannot both be completed, and that exactly one active component
+can be completed when every other component is passive.  This proves
+(i)--(iii), using \cref{lem:one-force}.
+
+For (iv), if neither side can force the initially white root, then no first
+force colouring $v$ exists in the wedge.  If one side can source $v$, execute
+its restricted source sequence first.  By \cref{lem:source-closure}, that side
+then has exactly the same restricted closure as if $v$ had been supplied at
+time zero.  The other side may therefore proceed from its plus closure.  In
+particular, a passive source branch may supply $v$ before an active branch
+consumes the force of $v$, and an active source branch may first supply $v$
+and then consume that force internally.  No additional timing state is
+needed.
+\end{proof}
+
+\begin{theorem}[Rooted product]\label{thm:wedge}
+Let
+\[
+  (P^H,P_0^H,A^H,A_0^H)
+  \quad\text{and}\quad
+  (P^K,P_0^K,A^K,A_0^K)
+\]
+be the response data of two rooted graphs.  The response data of their rooted
+wedge satisfy
+\begin{align}
+  P&=P^HP^K, & P_0&=P_0^HP_0^K,\label{eq:wedge-passive}\\
+  A&=A^HP^K+P^HA^K,
+  & A_0&=A_0^HP_0^K+P_0^HA_0^K.\label{eq:wedge-active}
+\end{align}
+\end{theorem}
+
+\begin{proof}
+Apply \cref{prop:wedge-set} to every ordered pair of component subsets and
+sum their generating weights.  The source-zero terms are precisely those in
+which both component source indicators are zero.
+\end{proof}
+
+The product becomes particularly transparent over the algebra of dual numbers.  Put
+\[
+  \Dalg=\mathbb Z[x,\eps]/(\eps^2)
+\]
+and define
+\begin{align*}
+  \mathscr R(H,r)&=P(H,r)+\eps A(H,r),\\
+  \mathscr R_0(H,r)&=P_0(H,r)+\eps A_0(H,r).
+\end{align*}
+
+\begin{corollary}[Dual-number multiplicativity]\label{cor:dual}
+For rooted graphs $(H,r)$ and $(K,s)$,
+\begin{align*}
+  \mathscr R\bigl((H,r)\vee(K,s)\bigr)
+  &=\mathscr R(H,r)\mathscr R(K,s),\\
+  \mathscr R_0\bigl((H,r)\vee(K,s)\bigr)
+  &=\mathscr R_0(H,r)\mathscr R_0(K,s).
+\end{align*}
+\end{corollary}
+
+\begin{proof}
+This is exactly \cref{thm:wedge}, since the coefficient of $\eps^2$ vanishes.
+\end{proof}
+
+The four coordinates are not merely sufficient; in the natural connection-matrix
+sense they are necessary.
+
+\begin{theorem}[Contextual completeness and rank four]\label{thm:connection-rank}
+Work over $K=\mathbb Q(x)$ and write
+\[
+  r(H)=(P_0(H),P_1(H),A_0(H),A_1(H))^T
+\]
+for a finite rooted graph $H$.  Let $C$ be the connection matrix indexed by
+finite rooted graphs, with
+\[
+  C_{H,L}=\Zpoly(H\vee L;x).
+\]
+Then $\operatorname{rank}_K C=4$.  Moreover, two rooted graphs have the same
+response profile if and only if
+\[
+  \Zpoly(H\vee L;x)=\Zpoly(H'\vee L;x)
+\]
+for every rooted graph $L$.  It is enough to test the four fixed contexts
+$K_1$, $K_2$ rooted at an endpoint, and $P_3$ rooted respectively at an
+endpoint and at its middle vertex.
+\end{theorem}
+
+\begin{proof}
+By \cref{prop:wedge-set,thm:normal-form}, compatibility of two successful
+states is bilinear.  In the coordinate order $(P_0,P_1,A_0,A_1)$,
+\[
+  C_{H,L}=r(H)^T B(x)r(L),
+\]
+where
+\[
+B(x)=
+\begin{pmatrix}
+ x&x+1&x&x+1\\
+ x+1&x+1&x+1&x+1\\
+ x&x+1&0&0\\
+ x+1&x+1&0&0
+\end{pmatrix}.
+\]
+Indeed, an incompatible pair of active states contributes zero; a compatible
+pair contributes $x$ when the common root must be initially selected, and an
+additional $1$ exactly when at least one side can source an initially white
+root.  Hence $\operatorname{rank}C\le4$.
+
+For the four rooted contexts listed in the statement, direct use of the
+profiles in \cref{subsec:sanity} gives the row matrix
+\[
+V(x)=
+\begin{pmatrix}
+ 1&0&0&0\\
+ 0&x&1&0\\
+ x&x+x^2&1&0\\
+ 0&x^2&0&2x
+\end{pmatrix}.
+\]
+A direct calculation gives
+\[
+  \det V=-2x^3,
+  \qquad
+  \det B=(x+1)^2.
+\]
+The corresponding $4\times4$ connection minor is $VBV^T$ and therefore has
+\[
+  \det(VBV^T)=4x^6(x+1)^2\ne0.
+\]
+Thus $\operatorname{rank}C=4$.  If the difference of two response vectors
+pairs to zero with the four displayed contexts, invertibility of $B$ and $V$
+forces that difference to vanish.  The converse is immediate from the
+factorization.
+\end{proof}
+
+\begin{remark}[Full response algebra]\label{rem:full-algebra}
+The complete set-level multiplication can be encoded over $K$ by
+\[
+  P_0\leftrightarrow1,\qquad P_1\leftrightarrow s,
+  \qquad A_0\leftrightarrow a,\qquad A_1\leftrightarrow sa,
+\]
+with
+\[
+  K[s,a]/(s^2-s,a^2)
+  \cong K[a]/(a^2)\times K[a]/(a^2).
+\]
+The idempotent $s$ records Boolean source disjunction and the nilpotent $a$
+records consumption of the root's unique force.  Evaluating the source
+coordinate at $s=0$ and $s=1$ recovers respectively the source-zero and total
+dual-number profiles $\mathscr R_0$ and $\mathscr R$.  Thus the dual-number
+notation is a pair of projections of the full four-state algebra.
+\end{remark}
+
+\begin{corollary}[Scalar specializations]\label{cor:connection-specialization}
+For the numerical invariant $\Zpoly(G;t)$ over a characteristic-zero field,
+the rooted connection matrix has rank four when $t\notin\{0,-1\}$, rank two
+when $t=-1$, and rank zero when $t=0$.
+\end{corollary}
+
+\begin{proof}
+For $t\ne0$, the displayed matrix $V(t)$ is invertible, so the rank equals that
+of $B(t)$.  This is four except at $t=-1$, where the nonzero part of $B(-1)$
+has rank two.  At $t=0$, every rooted wedge is nonempty and its zero-forcing
+polynomial has zero constant coefficient.
+\end{proof}
+
+For a wedge of $d$ rooted graphs the response is therefore
+\begin{align}
+  P&=\prod_{i=1}^dP_i,\label{eq:dpassive}\\
+  A&=\sum_{j=1}^d A_j\prod_{i\ne j}P_i,\label{eq:dactive}
+\end{align}
+with the analogous formulas for $P_0$ and $A_0$.
+
+\subsection{An exact cut-vertex formula}
+
+Let $G$ be connected and let $v$ be a cut vertex.  Let $W_1,\dots,W_d$ be the components of $G-v$, and put
+\[
+  B_i=G[W_i\cup\{v\}],
+\]
+rooted at $v$.  For each branch let $P_i,P_{i,0},A_i,A_{i,0}$ denote its response polynomials.
+
+\begin{theorem}[Articulation formula]\label{thm:articulation}
+Define
+\begin{align*}
+  R_v(G;x)
+  &=\prod_{i=1}^dP_i
+    +\sum_{j=1}^dA_j\prod_{i\ne j}P_i,\\
+  R_{v,0}(G;x)
+  &=\prod_{i=1}^dP_{i,0}
+    +\sum_{j=1}^dA_{j,0}\prod_{i\ne j}P_{i,0}.
+\end{align*}
+Then
+\begin{equation}\label{eq:articulation}
+  \boxed{
+  \Zpoly(G;x)=(1+x)R_v(G;x)-R_{v,0}(G;x).
+  }
+\end{equation}
+The contribution of zero-forcing sets containing $v$ is $xR_v(G;x)$, and the contribution of those excluding $v$ is $R_v(G;x)-R_{v,0}(G;x)$.
+\end{theorem}
+
+\begin{proof}
+The rooted graph $(G,v)$ is the wedge of the branches $(B_i,v)$.  Apply \cref{thm:wedge,thm:normal-form}.
+\end{proof}
+
+\begin{remark}
+Row's cut-vertex method \cite{Row2012} determines the least cardinality of a zero-forcing set by tracking zero spread.  Formula \eqref{eq:articulation} is coefficientwise: it reconstructs the number of zero-forcing sets of every cardinality.
+\end{remark}
+
+\section{Arbitrary separators and atomic preforts}\label{sec:separator-preforts}
+
+We now pass from a one-vertex boundary to an arbitrary finite separator.  The
+one-terminal response states remain useful later as selection projectors, but
+the natural general interface is most transparent in the fort language.
+Throughout this section $B=[q]=\{1,\ldots,q\}$ is an ordered boundary and the
+corresponding vertices of a boundaried graph are denoted $b_1,\ldots,b_q$.
+
+\begin{definition}[Boundaried graph and gluing]\label{def:q-boundaried}
+A \emph{$q$-boundaried graph} is a finite simple graph $H$ together with
+pairwise distinct labeled vertices $b_1,\ldots,b_q$.  If $H$ and $K$ are
+$q$-boundaried graphs, $H\oplus_q K$ is obtained from their disjoint union by
+identifying equally labeled boundary vertices and suppressing duplicate edges.
+Let $E_B(H)\subseteq\binom{B}{2}$ denote the graph induced by the boundary.
+\end{definition}
+
+The $q$th connection matrix of the zero-forcing polynomial is the infinite
+matrix
+\[
+  C_q[H,K]=\Zpoly(H\oplus_q K;x)
+\]
+over all isomorphism classes of $q$-boundaried graphs.  We write
+\[
+  r_q=\operatorname{rank}_{\mathbb Q(x)}C_q.
+\]
+Unless a specialization is stated explicitly, every connection rank in this
+paper is taken over the rational-function field $\mathbb Q(x)$.
+For $q=0$, multiplicativity on disjoint unions gives $r_0=1$.  Theorem
+\ref{thm:connection-rank} gives $r_1=4$.
+
+\subsection{Preforts and atomic words}
+
+Recall that a fort is a nonempty set $F$ such that no vertex outside $F$ has
+exactly one neighbour in $F$.  Equivalently, a set is zero forcing if and only
+if it meets every fort \cite{AIM2008}.  We omit the boundary conditions locally.
+
+\begin{definition}[Prefort]\label{def:prefort}
+Let $H$ be $q$-boundaried and let
+$S\subseteq V(H)\setminus B$ be an interior initial set.  A nonempty set
+$F\subseteq V(H)\setminus S$ is a \emph{$B$-prefort} if
+\[
+ |N_H(v)\cap F|\ne1
+ \qquad\text{for every }v\in V(H)\setminus(F\cup B).
+\]
+The fort condition is imposed at every nonboundary vertex and omitted at
+$B$.
+\end{definition}
+
+Write $\mathsf I$ for the symbol recording boundary membership.  For a prefort
+$F$ and $i\in B$ put
+\[
+ c_i(F)=|N_H(b_i)\cap(F\setminus B)|.
+\]
+Its set of \emph{atomic refinements} consists of all words
+$\alpha\in\{0,1,\mathsf I\}^q$ whose $i$th coordinate is
+\[
+ \alpha_i=\begin{cases}
+ \mathsf I,&b_i\in F,\\
+ 0,&b_i\notin F\text{ and }c_i(F)=0,\\
+ 1,&b_i\notin F\text{ and }c_i(F)=1,\\
+ 0\text{ or }1,&b_i\notin F\text{ and }c_i(F)\ge2.
+ \end{cases}
+\]
+The last line is the crucial saturation rule: once two interior fort
+neighbours are already present, adding an external contribution can never
+make the final count equal to one, so either binary refinement is safe for an
+existential compatibility test.
+
+Let
+\[
+  \mathcal A_H(S)
+\]
+be the union of the atomic refinements of all $B$-preforts disjoint from $S$.
+The all-zero atom has a special status.
+
+\begin{lemma}[Fatal atom]\label{lem:fatal-atom}
+If $0^q\in\mathcal A_H(S)$, then $S$ cannot occur as the interior part of a
+zero-forcing set in $H\oplus_q K$ for any external $q$-boundaried graph $K$ and
+any choice of initially blue boundary vertices.
+\end{lemma}
+
+\begin{proof}
+The atom $0^q$ is supplied by a nonempty prefort $F$ containing no boundary
+vertex and for which every boundary vertex has either zero or at least two
+neighbours in $F$.  Hence the omitted fort conditions at the boundary are
+already satisfied.  It follows that $F$ is a fort of $H$, and it remains a fort after any
+external graph is glued along $B$, because no new vertex of $F$ is introduced
+and external vertices have no neighbours in $F$ except through boundary
+vertices, none of which lies in $F$.  Since $F\cap S=\varnothing$, no extension
+of $S$ is zero forcing.
+\end{proof}
+
+We therefore work with the nonfatal atom poset
+\[
+  P_q=\{0,1,\mathsf I\}^q\setminus\{0^q\},
+\]
+ordered coordinatewise by
+\[
+  0<1<\mathsf I.
+\]
+The join $\alpha\vee\beta$ is the coordinatewise maximum.
+
+\begin{lemma}[Join closure]\label{lem:atom-join-closed}
+If $S$ is nonfatal, then $\mathcal A_H(S)\subseteq P_q$ is join closed:
+\[
+ \alpha,\beta\in\mathcal A_H(S)
+ \quad\Longrightarrow\quad
+ \alpha\vee\beta\in\mathcal A_H(S).
+\]
+\end{lemma}
+
+\begin{proof}
+Choose preforts $F,G$ and atomic refinements producing $\alpha,\beta$.
+The union $F\cup G$ is again a prefort.  Indeed, if a nonboundary vertex lies
+outside $F\cup G$, then its number of neighbours in each of $F$ and $G$ is
+zero or at least two; the same is therefore true for the union.
+
+At a boundary coordinate, membership in either prefort gives the symbol
+$\mathsf I$ in the union.  If neither contains the boundary vertex and at
+least one chosen atom has value $1$, then the union has at least one interior
+prefort neighbour; if the actual count is one the refinement is forced to be
+$1$, and if it is at least two the refinement $1$ is available.  If both
+chosen values are zero, the union either has count zero or at least two, in
+both cases allowing the refinement zero.  The union $F\cup G$ supplies
+$\alpha\vee\beta$.
+\end{proof}
+
+Let $\mathfrak J_q$ denote the finite set of join-closed subsets of $P_q$,
+including the empty set.  Every nonfatal decorated piece $(H,S)$ therefore has
+a state
+\[
+  \Theta(H,S)=\bigl(E_B(H),\mathcal A_H(S)\bigr)
+  \in 2^{\binom B2}\times\mathfrak J_q.
+\]
+
+\subsection{The exact gluing criterion}
+
+For an atom $\alpha$ define its trace
+\[
+ T(\alpha)=\{i\in B:\alpha_i=\mathsf I\}.
+\]
+Let $E\subseteq\binom B2$ be a boundary-edge graph and put
+\[
+ d_E(i,T)=|N_E(i)\cap T|.
+\]
+
+\begin{definition}[Atomic compatibility]\label{def:atomic-compatible}
+Atoms $\alpha,\beta\in P_q$ are \emph{$E$-compatible} if they have the same
+trace $T$ and
+\begin{equation}\label{eq:atomic-compatibility}
+ d_E(i,T)+\alpha_i+\beta_i\ne1
+ \qquad(i\notin T),
+\end{equation}
+where outside $T$ the symbols are the integers $0,1$.
+\end{definition}
+
+\begin{theorem}[Prefort gluing]\label{thm:prefort-gluing}
+Let $H,K$ be $q$-boundaried graphs with interior initial sets $S_H,S_K$, and
+let
+\[
+ E=E_B(H)\cup E_B(K).
+\]
+There is a fort of $H\oplus_qK$ disjoint from
+$S_H\cup S_K$ with boundary trace $T$ if and only if there exist
+$E$-compatible atoms
+\[
+ \alpha\in\mathcal A_H(S_H),\qquad
+ \beta\in\mathcal A_K(S_K)
+\]
+with common trace $T$.
+\end{theorem}
+
+\begin{proof}
+Suppose first that $F$ is a global fort.  Its restrictions
+$F_H=F\cap V(H)$ and $F_K=F\cap V(K)$ are local preforts and agree on the
+boundary trace.  At a boundary vertex outside the trace, the total number of
+fort neighbours is
+\[
+ c_i(F_H)+c_i(F_K)+d_E(i,T),
+\]
+and this number is not one.  If a local count is zero or one, take the forced
+atomic value.  If it is at least two, choose a binary refinement so that
+\eqref{eq:atomic-compatibility} holds; this is always possible because the
+actual count is already at least two.  Compatible refinements exist.
+
+Conversely, choose local preforts and atomic refinements producing compatible
+$\alpha,\beta$.  Their union has the correct fort condition at every
+nonboundary vertex by the definition of prefort.  The traces agree, so the
+union is well defined at $B$.  At $i\notin T$, if both local counts are zero or
+one, equation \eqref{eq:atomic-compatibility} is exactly the global fort
+condition.  If either local count is at least two, the global count is at
+least two automatically.  Hence the union is a global fort.
+\end{proof}
+
+For $A,D\in\mathfrak J_q$ let
+\[
+ \mathcal T_E(A,D)
+ =\{T:\text{an $E$-compatible pair in $A\times D$ has trace }T\}.
+\]
+If $X\subseteq B$ is the initially blue part of the boundary, a global fort
+disjoint from the initial set can only have trace disjoint from $X$.  We obtain
+the separator kernel
+\begin{equation}\label{eq:separator-kernel}
+ K_E(A,D;x)
+ =\sum_{\substack{X\subseteq B\\
+      X\cap T\ne\varnothing\ \forall T\in\mathcal T_E(A,D)}}x^{|X|}.
+\end{equation}
+If $\varnothing\in\mathcal T_E(A,D)$ the sum is zero; if
+$\mathcal T_E(A,D)=\varnothing$, it is $(1+x)^q$.
+
+\begin{example}[A complete two-terminal calculation]\label{ex:q2-separator}
+Let $q=2$, write the independent boundary as $B=\{a,b\}$, and consider the
+two decorated pieces in \cref{fig:q2-worked}.  In the left piece $H$, the
+interior vertices are $v,c$, the edges are
+\[
+ av,\ bv,\ ac,\ bc,
+\]
+and $S_H=\{c\}$.  Since the selected vertex $c$ lies outside every prefort
+disjoint from $S_H$, its two neighbours $a,b$ must occur together or not at
+all.  The nonempty preforts are therefore
+\[
+ \{v\},\qquad \{a,b\},\qquad \{a,b,v\}.
+\]
+They supply, respectively, the atoms $11,\mathsf I\mathsf I,$ and
+$\mathsf I\mathsf I$.  Thus
+\[
+ \mathcal A_H(S_H)=\{11,\mathsf I\mathsf I\},
+\]
+a two-element chain.  In the right piece $K$, the only interior vertex $w$ is
+selected and adjacent to both boundary vertices.  Its prefort condition
+excludes $\{a\}$ and $\{b\}$, so
+\[
+ \mathcal A_K(S_K)=\{\mathsf I\mathsf I\},\qquad S_K=\{w\}.
+\]
+
+For an independent boundary, two atoms are compatible exactly when they are
+equal.  Hence the only compatible pair is
+$\mathsf I\mathsf I/\mathsf I\mathsf I$, with trace $\{a,b\}$.  A selected
+boundary set must meet this trace, and therefore
+\[
+ K_{\varnothing}(\mathcal A_H(S_H),\mathcal A_K(S_K);x)
+ =2x+x^2.
+\]
+Equivalently, the chain formula below gives the same value directly:
+$\mathcal A_H(S_H)\cap\mathcal A_K(S_K)=\{\mathsf I\mathsf I\}$, so the
+empty-chain term contributes $(1+x)^2$ and the singleton-chain term contributes
+$-1$.  Thus $(1+x)^2-1=2x+x^2$.  The fixed interior choice
+$S_H\cup S_K=\{c,w\}$ consequently contributes
+\[
+ x^2(2x+x^2)=2x^3+x^4
+\]
+to the polynomial of the glued graph.  Directly, one must initially select at
+least one of $a,b$; either choice starts the forcing process, while selecting
+neither leaves both boundary vertices white and no force is available.
+\end{example}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[every node/.style={font=\small},
+ boundary/.style={circle,draw,double,minimum size=7mm,inner sep=0pt},
+ plain/.style={circle,draw,minimum size=7mm,inner sep=0pt},
+ selected/.style={circle,draw,fill=blue!18,minimum size=7mm,inner sep=0pt}]
+ \node[boundary] (a1) at (0,1.1) {$a$};
+ \node[boundary] (b1) at (3,1.1) {$b$};
+ \node[plain] (v) at (1.5,2.0) {$v$};
+ \node[selected] (c) at (1.5,0.2) {$c$};
+ \draw (a1)--(v)--(b1)--(c)--(a1);
+ \node at (1.5,-0.55) {$H,\ S_H=\{c\}$};
+
+ \node[boundary] (a2) at (5.0,1.1) {$a$};
+ \node[boundary] (b2) at (8.0,1.1) {$b$};
+ \node[selected] (w) at (6.5,1.1) {$w$};
+ \draw (a2)--(w)--(b2);
+ \node at (6.5,-0.55) {$K,\ S_K=\{w\}$};
+\end{tikzpicture}
+\caption{Worked $q=2$ separator example.  Double circles are boundary
+vertices; shaded vertices are prescribed members of the interior initial set.
+The left atom family is the chain $\{11,\mathsf I\mathsf I\}$ and the right
+family is $\{\mathsf I\mathsf I\}$.}
+\label{fig:q2-worked}
+\end{figure}
+
+\begin{theorem}[Separator splitting formula]\label{thm:separator-splitting}
+Let $H,K$ be $q$-boundaried graphs, write
+$E=E_B(H)\cup E_B(K)$, and for $A\in\mathfrak J_q$ define
+\[
+ R_H(A;x)=
+ \sum_{\substack{S\subseteq V(H)\setminus B\\
+       0^q\notin\mathcal A_H(S),\ \mathcal A_H(S)=A}}x^{|S|},
+\]
+with $R_K$ defined analogously.  Then
+\begin{equation}\label{eq:general-splitting}
+ \boxed{
+ \Zpoly(H\oplus_qK;x)
+ =\sum_{A,D\in\mathfrak J_q}
+   R_H(A;x)K_E(A,D;x)R_K(D;x).
+ }
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Partition an initial set of $H\oplus_qK$ uniquely into its interior parts
+$S_H,S_K$ and its selected boundary set $X$.  Fatal interior states cannot
+succeed by \cref{lem:fatal-atom}.  For a nonfatal pair, the fort
+characterization and \cref{thm:prefort-gluing} say that the total initial set
+is zero forcing exactly when $X$ intersects every trace in
+$\mathcal T_E(\mathcal A_H(S_H),\mathcal A_K(S_K))$.  Summing the weights
+$x^{|S_H|+|S_K|+|X|}$ gives \eqref{eq:general-splitting}.
+\end{proof}
+
+We obtain a splitting formula for every finite separating set.  The rest of
+this section determines the linear information actually needed by this finite
+but potentially large kernel.
+
+\section{Chain compression and exact connection ranks}\label{sec:separator-rank}
+
+Let $\mathcal C_q$ be the set of chains of $P_q$, including the empty chain,
+and put
+\[
+  c_q=|\mathcal C_q|.
+\]
+The key cancellation is independent of zero forcing.
+
+\begin{lemma}[Chain disjointness identity]\label{lem:chain-disjointness}
+If $A,D\in\mathfrak J_q$, then
+\begin{equation}\label{eq:chain-disjointness}
+ \mathbf1[A\cap D=\varnothing]
+ =\sum_{\substack{C\in\mathcal C_q\\C\subseteq A\cap D}}(-1)^{|C|}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Ordinary inclusion--exclusion gives
+\[
+ \mathbf1[A\cap D=\varnothing]
+ =\sum_{X\subseteq A\cap D}(-1)^{|X|}.
+\]
+For a finite nonempty join-semilattice $J$, call $j\in J$
+\emph{join-irreducible} if there do not exist $u,v<j$ with $j=u\vee v$.
+Let $I(J)$ be the set of join-irreducible elements.  Two elementary finite
+semilattice facts will be used explicitly.
+
+First, $I(J)$ generates $J$.  Indeed, proceed by induction upward from the
+minimal elements.  A minimal element is join-irreducible.  If $j$ is not
+join-irreducible, write $j=u\vee v$ with $u,v<j$ and apply the induction
+hypothesis to $u$ and $v$.  Second, every generating set $X$ for $J$ must
+contain $I(J)$.  If $j\in I(J)$ is a join of finitely many elements of $X$,
+repeated use of join-irreducibility forces $j$ to equal one of those
+generators.
+
+Now group the subsets $X\subseteq A\cap D$ according to the join-closed set
+$J=\langle X\rangle_\vee$ that they generate.  For nonempty $J$, the preceding
+facts show that the generating subsets are exactly
+\[
+ I(J)\cup Y,\qquad Y\subseteq J\setminus I(J).
+\]
+Their total inclusion--exclusion coefficient is therefore
+\[
+ \sum_{Y\subseteq J\setminus I(J)}(-1)^{|I(J)|+|Y|}
+ =(-1)^{|I(J)|}(1-1)^{|J|-|I(J)|}.
+\]
+This is nonzero precisely when every element of $J$ is join-irreducible.
+That happens precisely when $J$ is a chain.  If $a,b\in J$ are incomparable,
+then $a\vee b$ is strictly larger than both and is therefore reducible.
+Conversely, in a chain the join of two elements is their maximum, so no element
+can be the join of two strictly smaller elements.  A nonempty chain $C$
+contributes $(-1)^{|C|}$.
+
+Finally, $X=\varnothing$ generates the empty join-closed set; its coefficient
+is $1$, which is exactly the contribution of the empty chain in
+\eqref{eq:chain-disjointness}.  This proves the identity including the empty
+case.
+\end{proof}
+
+Define the chain-incidence matrix
+\[
+ Z[A,C]=\mathbf1[C\subseteq A],
+ \qquad A\in\mathfrak J_q,
+ \quad C\in\mathcal C_q.
+\]
+When its rows are restricted to chain states, $Z$ is the zeta matrix of the
+finite poset $\mathcal C_q$ ordered by inclusion.  After a linear extension it
+is triangular with diagonal one, hence invertible.
+
+The next lemma is what allows chain compression to survive arbitrary boundary
+edges.
+
+\begin{lemma}[Compatibility neighbourhoods are join closed]
+\label{lem:compatibility-neighborhood}
+Fix a boundary-edge graph $E$, a selected boundary set $X$, and
+$D\in\mathfrak J_q$.  Let $N_{E,X}(D)$ be the set of atoms $\alpha\in P_q$
+whose trace is disjoint from $X$ and for which some $\beta\in D$ is
+$E$-compatible with $\alpha$.  Then $N_{E,X}(D)$ is join closed.
+\end{lemma}
+
+\begin{proof}
+Take $\alpha_1,\alpha_2\in N_{E,X}(D)$ with compatible witnesses
+$\beta_1,\beta_2\in D$.  Since $D$ is join closed,
+$\beta=\beta_1\vee\beta_2$ belongs to $D$; put
+$\alpha=\alpha_1\vee\alpha_2$.  Their common trace is the union of the two
+original traces and is still disjoint from $X$.
+
+Suppose compatibility failed at $i$ outside that union.  If the boundary-edge
+contribution $d_E(i,T)$ were one and both joined bits zero, then one of the
+original traces already contributed that unique boundary neighbour while the
+corresponding original bits were zero, contradicting compatibility of that
+pair.  If $d_E(i,T)=0$ and the two joined bits summed to one, then one joined
+bit, say on the $\alpha$ side, is one while the other is zero.  Some original
+$\alpha_j$ therefore has bit one, every $\beta_j$ has bit zero, and no original
+trace has an $E$-neighbour at $i$; again the $j$th pair would violate
+\eqref{eq:atomic-compatibility}.  Contributions at least two are automatically
+safe.  The atoms $\alpha$ and $\beta$ are compatible.
+\end{proof}
+
+For fixed $E$ and $X$, the success indicator is therefore
+\[
+ k_{E,X}(A,D)
+ =\mathbf1[A\cap N_{E,X}(D)=\varnothing].
+\]
+By \cref{lem:chain-disjointness}, its dependence on $A$ lies in the column
+space of $Z$.  By symmetry the same is true in the $D$ coordinate.  Summing
+$x^{|X|}k_{E,X}$ over $X$ proves the following.
+
+\begin{theorem}[Chain compression]\label{thm:chain-compression}
+For every boundary-edge graph $E$, the matrix
+\[
+ \bigl(K_E(A,D;x)\bigr)_{A,D\in\mathfrak J_q}
+\]
+over $\mathbb Q(x)$ has the same rank as its submatrix obtained by restricting
+both rows and columns to chain states $C,D\in\mathcal C_q$.  In particular its
+rank is at most $c_q$.
+\end{theorem}
+
+\begin{proof}
+The preceding discussion gives a factorization $K_E=ZH_E$ for some matrix
+$H_E$.  Since the restriction of $Z$ to chain rows is invertible, the chain
+rows span the full row space.  Applying the same argument to the symmetric
+matrix $K_E$ shows that the chain columns span the full column space.  Hence
+the chain--chain submatrix has the same rank.
+\end{proof}
+
+\subsection{Independent boundaries and chain enumeration}
+
+When $E=\varnothing$, two atoms are compatible exactly when they are equal.
+Indeed they must have the same trace, and outside the trace
+$\alpha_i+\beta_i\ne1$ is equivalent to $\alpha_i=\beta_i$ for binary bits.
+Inclusion--exclusion over the common atoms gives the more explicit
+factorization
+\begin{equation}\label{eq:independent-chain-factor}
+ K_{\varnothing}(A,D;x)
+ =\sum_{\substack{C\in\mathcal C_q\\C\subseteq A\cap D}}
+ (-1)^{|C|}(1+x)^{q-|T(C)|},
+\end{equation}
+where $T(C)=\bigcup_{\alpha\in C}T(\alpha)$.  Thus
+\[
+ K_{\varnothing}=Z\,W(x)\,Z^T,
+ \qquad
+ W_{C,C}(x)=(-1)^{|C|}(1+x)^{q-|T(C)|}.
+\]
+Every diagonal entry is nonzero in $\mathbb Q(x)$ and the chain rows of $Z$
+are invertible.  Therefore
+\begin{equation}\label{eq:independent-universal-rank}
+ \operatorname{rank}_{\mathbb Q(x)}K_{\varnothing}=c_q.
+\end{equation}
+
+The numbers $c_q$ are explicit.
+
+\begin{proposition}[Chain count]\label{prop:chain-count}
+For $q\ge0$,
+\begin{equation}\label{eq:cq-formula}
+ \boxed{
+ c_q=\frac12\left[1+\sum_{k=1}^{2q+1}\sum_{j=1}^k
+ (-1)^{k-j}\binom{k-1}{j-1}\binom{j+2}{2}^{q}\right].
+ }
+\end{equation}
+Moreover
+\[
+ \log c_q=2q\log q+O(q).
+\]
+\end{proposition}
+
+\begin{proof}
+A weak $j$-term chain in $C_3^q$ is chosen independently in every coordinate.
+The number of nondecreasing $j$-tuples from a three-element chain is
+$\binom{j+2}{2}$, so there are $\binom{j+2}{2}^q$ weak chains.  If $s_q(k)$ is
+the number of strict $k$-element chains, then a weak $j$-chain with exactly
+$k$ distinct terms is obtained by choosing the $k-1$ change positions, giving
+\[
+ \binom{j+2}{2}^q
+ =\sum_{k=1}^j\binom{j-1}{k-1}s_q(k).
+\]
+Binomial inversion yields
+\[
+ s_q(k)=\sum_{j=1}^k(-1)^{k-j}\binom{k-1}{j-1}\binom{j+2}{2}^q.
+\]
+A strict chain in $C_3^q$ has at most $2q+1$ elements.  Since $C_3^q$ has a
+unique minimum $0^q$, adding or deleting that minimum bijects chains avoiding
+it with chains containing it.  Hence the number of chains in
+$P_q=C_3^q\setminus\{0^q\}$ is one half of the total number of chains in
+$C_3^q$, proving \eqref{eq:cq-formula}.
+
+For the asymptotics, maximal chains are obtained by ordering the $2q$ labeled
+coordinate increments, subject only to the first increment of each coordinate
+preceding its second.  There are $(2q)!/2^q$ such chains.  Conversely, encode
+an arbitrary chain by assigning each of the $2q$ coordinate increments a time
+in $\{0,1,\ldots,2q+1\}$, where the extreme values mean that the increment
+occurs before the first or after the last displayed element.  This gives the
+upper bound $(2q+2)^{2q}$.  Stirling's formula now gives the stated logarithmic
+order.
+\end{proof}
+
+The first values are
+\[
+\begin{array}{c|rrrrrrrr}
+q&0&1&2&3&4&5&6&7\\
+\hline
+c_q&1&4&52&1636&95668&8977444&1234728052&234059341156.
+\end{array}
+\]
+
+\subsection{Realizing every chain state}
+
+The chain compression above is an upper-bound statement unless its chain modes
+can be produced by actual graph pieces.  We next give an explicit realization.
+A \emph{decorated graph} means a graph together with a prescribed interior
+initial set $S$; selected constraint vertices below belong to $S$ and therefore
+cannot lie in a prefort disjoint from $S$.
+
+\begin{lemma}[Equality and implication gadgets]\label{lem:boolean-gadgets}
+Let $u,v$ be unselected nonboundary vertices.
+\begin{enumerate}[label=\textnormal{(\alph*)}]
+\item A selected vertex adjacent exactly to $u,v$ enforces
+$u\in F\Longleftrightarrow v\in F$ in every prefort $F$ disjoint from the
+selected set.
+\item After adding an unselected duplicate $v'$ equality-tied to $v$, a
+selected vertex adjacent to $u,v,v'$ enforces
+$u\in F\Longrightarrow v\in F$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+A selected constraint vertex lies outside $F$, so its prefort condition says
+that the number of its neighbours in $F$ is not one.  For degree two this
+allows only $00$ and $11$, proving equality.  In part (b), the duplicate has
+the same membership as $v$, so the three-neighbour counts for $(u,v)$ are
+$0,2,1,3$ on $00,01,10,11$, respectively.  Exactly the assignment $10$ is
+forbidden.
+\end{proof}
+
+\begin{theorem}[Chain realization]\label{thm:chain-realization}
+For every chain $C\in\mathcal C_q$ and every desired boundary-edge set
+$E\subseteq\binom B2$, there exists a finite simple $q$-boundaried graph $H_C$
+and an interior initial set $S_C$ such that
+\[
+ E_B(H_C)=E,
+ \qquad
+ 0^q\notin\mathcal A_{H_C}(S_C),
+ \qquad
+ \mathcal A_{H_C}(S_C)=C.
+\]
+\end{theorem}
+
+\begin{proof}
+We give the construction with a formal vertex and edge description.  All
+vertices called \emph{selected} below belong to $S_C$; all other auxiliary
+vertices are unselected.
+
+\paragraph{The empty chain.}
+For $C=\varnothing$, take the boundary $B$ and, for every $i$, add a selected
+leaf $p_i$ adjacent only to $b_i$.  If a prefort disjoint from $S_C$ contained
+$b_i$, then the selected vertex $p_i$, which lies outside that prefort, would
+have exactly one prefort neighbour.  Hence every boundary vertex is excluded.
+There are no other unselected vertices, so no nonempty prefort exists and the
+atomic family is empty.  The prescribed boundary edges $E$ may then be added.
+
+\paragraph{The nonempty chain: master variables.}
+Write
+\[
+ C=\{\alpha^1<\alpha^2<\cdots<\alpha^k\},\qquad k\ge1.
+\]
+Introduce unselected master vertices $t_1,\ldots,t_k$.  For every
+$1\le j<k$, introduce an unselected duplicate $d_j$ and selected vertices
+$e_j,p_j$, with edges
+\[
+ e_jt_j,\ e_jd_j,
+ \qquad
+ p_jt_{j+1},\ p_jt_j,\ p_jd_j.
+\]
+The degree-two selected vertex $e_j$ enforces
+$d_j\in F\Longleftrightarrow t_j\in F$, and then the degree-three selected
+vertex $p_j$ enforces
+\[
+ t_{j+1}\in F\Longrightarrow t_j\in F
+\]
+by \cref{lem:boolean-gadgets}.  Hence the possible membership vectors of the
+master vertices are exactly the prefixes
+\[
+ 00\cdots0,\ 10\cdots0,\ 110\cdots0,\ldots,\ 11\cdots1.
+\]
+
+\paragraph{Encoding one boundary coordinate.}
+Fix $i\in B$.  Because $C$ is a chain, the coordinate sequence
+$\alpha_i^1,\ldots,\alpha_i^k$ is nondecreasing in
+$0<1<\mathsf I$.  If the value $1$ occurs, let
+\[
+ a(i)=\min\{j:\alpha_i^j=1\}.
+\]
+Introduce an unselected marker $m_i$, join it to $b_i$, and introduce a
+selected equality vertex $f_i$ with edges $f_im_i,f_it_{a(i)}$.  Thus
+$m_i\in F$ exactly from prefix $a(i)$ onward.  If the value $1$ never occurs,
+no marker is introduced.
+
+If the value $\mathsf I$ occurs, let
+\[
+ \iota(i)=\min\{j:\alpha_i^j=\mathsf I\}.
+\]
+Introduce a selected equality vertex $g_i$ with edges
+$g_ib_i,g_it_{\iota(i)}$; hence $b_i$ enters the prefort exactly from prefix
+$\iota(i)$ onward.  If $\mathsf I$ never occurs, instead introduce a selected
+pin $h_i$ adjacent only to $b_i$, which forces $b_i$ to remain outside every
+prefort.  A direct jump $0\to\mathsf I$ requires no marker.
+
+Let $S_C$ be the set of all selected vertices
+\[
+ \{e_j,p_j\}_{j<k}\cup\{f_i,g_i,h_i:\text{created above}\},
+\]
+and let $H_C$ contain precisely the boundary, master, duplicate, marker, and
+selected constraint vertices just described, together with the listed edges.
+Finally add the prescribed edge set $E$ inside the boundary.  These boundary
+edges do not enter any nonboundary prefort condition.
+
+\paragraph{No unintended preforts.}
+Let $F$ be a prefort disjoint from $S_C$.  The equality and implication
+constraints force the master membership set to be a prefix
+$\{t_1,\ldots,t_s\}$ for some $0\le s\le k$, and all duplicates, markers, and
+unpinned boundary vertices are then determined by equality.  If $s=0$, every
+duplicate and marker is outside $F$, every equality-tied boundary vertex is
+outside $F$, and every remaining boundary vertex is pinned out; hence $F$ is
+empty, contrary to the definition of prefort.  Thus $1\le s\le k$.
+
+Conversely, each nonzero prefix gives a prefort.  Every selected equality or
+implication vertex sees one of the allowed neighbour counts $0,2,$ or $3$ by
+construction.  An unselected master vertex or duplicate that lies outside the
+prefort is adjacent only to selected constraint vertices and therefore sees
+zero prefort neighbours.  The only additional check concerns a marker $m_i$
+outside the prefort.  This means $s<a(i)$.  Monotonicity of the coordinate
+sequence implies that $b_i$ has not yet reached $\mathsf I$, so $b_i$ is also
+outside the prefort.  The marker therefore sees zero prefort neighbours (its
+other neighbour is the selected equality vertex $f_i$).  Boundary vertices
+need not satisfy a local fort condition by definition of prefort.  Hence no
+unselected auxiliary vertex creates an unintended restriction.
+
+For prefix $s$, coordinate $i$ is $0$ before $a(i)$, is $1$ from $a(i)$ until
+$\iota(i)-1$ when these stages exist, and is $\mathsf I$ from $\iota(i)$
+onward.  The resulting atomic word is exactly $\alpha^s$.  Each boundary
+vertex has at most one interior prefort neighbour, so no $\ge2$ count creates
+extra wildcard refinements.  Therefore
+\[
+ \mathcal A_{H_C}(S_C)=\{\alpha^1,\ldots,\alpha^k\}=C.
+\]
+Since $C\subseteq P_q$, the fatal atom $0^q$ does not occur.  Adding the edges
+of $E$ inside $B$ changes neither the prefort conditions away from $B$ nor the
+interior counts $c_i(F)$, completing the construction.
+\end{proof}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[every node/.style={font=\scriptsize},
+ var/.style={circle,draw,minimum size=6mm,inner sep=0pt},
+ boundary/.style={circle,draw,double,minimum size=6mm,inner sep=0pt},
+ gadget/.style={draw,rounded corners,fill=blue!10,minimum height=5mm,inner sep=2pt}]
+ \node[var] (t1) at (0,0) {$t_1$};
+ \node[var] (t2) at (2,0) {$t_2$};
+ \node[gadget] (imp) at (1,0.75) {$t_2\Rightarrow t_1$};
+ \draw (t1)--(imp)--(t2);
+ \node[var] (m1) at (-0.5,2) {$m_1$};
+ \node[var] (m2) at (2.5,2) {$m_2$};
+ \node[gadget] (eqm1) at (-0.25,1) {$=$};
+ \node[gadget] (eqm2) at (2.25,1) {$=$};
+ \draw (t1)--(eqm1)--(m1);
+ \draw (t1)--(eqm2)--(m2);
+ \node[boundary] (b1) at (-0.5,3.2) {$b_1$};
+ \node[boundary] (b2) at (2.5,3.2) {$b_2$};
+ \draw (m1)--(b1); \draw (m2)--(b2);
+ \node[gadget] (eqb1) at (0.25,3.2) {$=$};
+ \node[gadget] (eqb2) at (1.75,3.2) {$=$};
+ \draw (b1)--(eqb1)--(t2);
+ \draw (b2)--(eqb2)--(t2);
+ \node[align=left] at (5.2,1.6) {schematic canonical realization\\of $C=\{11,\mathsf I\mathsf I\}$;\\boxes denote the selected gadgets\\of \cref{lem:boolean-gadgets}};
+\end{tikzpicture}
+\caption{Schematic of the chain-realization construction for a representative
+$q=2$ chain.  The implication box abbreviates the duplicate-plus-constraint
+gadget specified formally in the proof; equality boxes are selected
+degree-two constraint vertices.}
+\label{fig:chain-realization}
+\end{figure}
+
+\subsection{Selection projectors}
+
+To turn a decorated realization into a row of the ordinary connection matrix,
+we must isolate the prescribed initial set.  The rank-four one-terminal
+calculus provides explicit projectors.  We work with formal
+$\mathbb Q(x)$-linear combinations of rooted graphs, usually called quantum
+graphs in the connection-matrix literature.
+
+Let $K_1,K_2,P_3^{\rm end},P_3^{\rm mid}$ denote the four rooted contexts used
+in \cref{thm:connection-rank}.  Define
+\begin{align}
+ Q_{\rm in}
+ &= -\frac1{x+1}K_1
+    -\frac1{x(x+1)}K_2
+    +\frac1{x(x+1)}P_3^{\rm end},
+ \label{eq:projector-in}\\
+ Q_{\rm out}
+ &= \frac{x+2}{x+1}K_1
+    +\frac1{x(x+1)}K_2
+    -\frac1{x(x+1)}P_3^{\rm end}.
+ \label{eq:projector-out}
+\end{align}
+
+\begin{lemma}[Vertex-selection projectors]\label{lem:selection-projectors}
+For every rooted graph $(G,v)$,
+\begin{align*}
+ \Zpoly(G\vee Q_{\rm in};x)
+ &=\sum_{\substack{S\text{ zero forcing in }G\\v\in S}}x^{|S|},\\
+ \Zpoly(G\vee Q_{\rm out};x)
+ &=\sum_{\substack{S\text{ zero forcing in }G\\v\notin S}}x^{|S|}.
+\end{align*}
+The identities remain valid when $G$ contains arbitrary additional labeled
+boundary vertices and arbitrary external attachments away from the interior of
+the projector.
+\end{lemma}
+
+\begin{proof}
+Write $r(G)=(P_0,P_1,A_0,A_1)^T$.  The rooted profiles used in the projectors
+are
+\[
+ r(K_1)=\begin{pmatrix}1\\0\\0\\0\end{pmatrix},\qquad
+ r(K_2)=\begin{pmatrix}0\\x\\1\\0\end{pmatrix},\qquad
+ r(P_3^{\rm end})=\begin{pmatrix}x\\x+x^2\\1\\0\end{pmatrix}.
+\]
+Consequently the formal response vectors of the two quantum graphs simplify to
+\[
+ r(Q_{\rm in})=
+ \begin{pmatrix}0\\x/(x+1)\\0\\0\end{pmatrix},
+ \qquad
+ r(Q_{\rm out})=
+ \begin{pmatrix}1\\-x/(x+1)\\0\\0\end{pmatrix}.
+\]
+Multiplication by the connection matrix $B(x)$ of
+\cref{thm:connection-rank} gives
+\[
+ B(x)r(Q_{\rm in})=
+ \begin{pmatrix}x\\x\\x\\x\end{pmatrix},
+ \qquad
+ B(x)r(Q_{\rm out})=
+ \begin{pmatrix}0\\1\\0\\1\end{pmatrix}.
+\]
+Hence
+\[
+ r(G)^TB(x)r(Q_{\rm in})=x(P_0+P_1+A_0+A_1),
+ \qquad
+ r(G)^TB(x)r(Q_{\rm out})=P_1+A_1,
+\]
+which are exactly the contributions from initial sets containing and omitting
+$v$, respectively.  All calculations take place over $\mathbb Q(x)$, so the
+denominators in the projectors are legitimate; specializations such as
+$x=0,-1$ are separate questions.
+
+The argument is coefficientwise in any additional vertex-set variables on
+$G-v$.  Thus extra labeled boundary vertices or external attachments can be
+held fixed as part of the rooted context, and successive projectors at
+distinct vertices act as commuting membership filters.
+\end{proof}
+
+Applying these projectors successively at distinct vertices filters the
+multivariate zero-forcing generating function coefficientwise, so they commute
+as membership filters.
+
+\begin{corollary}[Pinning a prescribed interior set]\label{cor:pinning}
+Let $H$ be a $q$-boundaried graph, $U=V(H)\setminus B$, and
+$S\subseteq U$.  There is a $q$-boundaried quantum graph $\Pi_{H,S}$ which, in every
+external $q$-boundaried context, retains exactly the zero-forcing sets whose
+intersection with $U$ is $S$.  In particular, if $(H,S)$ realizes a chain
+state $C$ and $(K,T)$ realizes a chain state $D$, then
+\[
+ \Zpoly(\Pi_{H,S}\oplus_q\Pi_{K,T};x)
+ =x^{|S|+|T|}K_{E_B(H)\cup E_B(K)}(C,D;x).
+\]
+\end{corollary}
+
+\begin{proof}
+Attach $Q_{\rm in}$ at every vertex of $S$ and $Q_{\rm out}$ at every vertex
+of $U\setminus S$.  Repeated application of
+\cref{lem:selection-projectors} retains exactly the desired membership
+pattern, and the retained interior vertices contribute $x^{|S|}$.  Applying
+the same construction independently to $(K,T)$ and then using the separator
+splitting theorem leaves only the prescribed pair of local states, giving the
+displayed pairing identity.
+\end{proof}
+
+\subsection{The master connection-rank formula}
+
+For a fixed boundary-edge graph $E$, let
+\[
+  M_E(x)=\bigl(K_E(C,D;x)\bigr)_{C,D\in\mathcal C_q}
+  \in\mathbb Q(x)^{c_q\times c_q}
+\]
+be the chain kernel.  Put $m=\binom q2$.  The full finite
+\emph{chain-edge connection kernel}
+$\mathbb M_q\in\mathbb Q(x)^{2^m c_q\times 2^m c_q}$ is indexed by pairs
+$(F,C)$ with $F\subseteq\binom B2$ and $C\in\mathcal C_q$ and has block
+\[
+ \mathbb M_q[(F,C),(G,D)]=M_{F\cup G}(x)[C,D].
+\]
+
+\begin{theorem}[Exact finite connection model]\label{thm:finite-connection-model}
+For every $q\ge0$,
+\[
+ \boxed{
+ r_q=\operatorname{rank}_{\mathbb Q(x)}\mathbb M_q.
+ }
+\]
+The infinite connection matrix of the zero-forcing polynomial has exactly
+the same rank as the explicit finite chain-edge kernel.
+\end{theorem}
+
+\begin{proof}
+Put $m=\binom q2$ and $j_q=|\mathfrak J_q|$.  We prove the two inequalities
+separately and keep the finite and infinite column spaces distinct throughout.
+
+\emph{Upper bound.}
+For a fixed glued boundary-edge graph $E$, let
+\[
+ U_E=\bigl(K_E(A,D;x)\bigr)_{A,D\in\mathfrak J_q}
+ \in\mathbb Q(x)^{j_q\times j_q}.
+\]
+Let $Z\in\{0,1\}^{j_q\times c_q}$ be the join-state/chain incidence matrix
+$Z[A,C]=\mathbf1[C\subseteq A]$, and let $Z_0$ be its square submatrix on
+chain rows.  As observed above, $Z_0$ is the zeta matrix of chains ordered by
+inclusion and is invertible; in particular $Z$ has full column rank.
+
+The proof of \cref{thm:chain-compression} shows that the column and row spaces
+of $U_E$ are contained in the column and row spaces generated by $Z$.  Choose
+any left inverse $L$ of $Z$ and set
+\[
+ N_E=L U_E L^T\in\mathbb Q(x)^{c_q\times c_q}.
+\]
+Since $ZL$ acts as the identity on the column space of $U_E$ and
+$L^TZ^T$ acts as the identity on its row space,
+\begin{equation}\label{eq:UE-ZNE}
+ U_E=ZN_EZ^T.
+\end{equation}
+Restricting \eqref{eq:UE-ZNE} to chain rows and columns gives
+\begin{equation}\label{eq:ME-Z0NE}
+ M_E=Z_0N_EZ_0^T.
+\end{equation}
+The matrices $N_E$ and $M_E$ are congruent through the invertible matrix $Z_0$.
+
+Let $\mathbb U_q$ be the universal finite matrix indexed by local states
+$(F,A)$ with $F\subseteq\binom B2$ and $A\in\mathfrak J_q$, whose
+$(F,G)$ block is $U_{F\cup G}$.  Let $\mathbb N_q$ be the analogous block
+matrix with blocks $N_{F\cup G}$.  Equations \eqref{eq:UE-ZNE} and
+\eqref{eq:ME-Z0NE} give the explicit factorizations
+\begin{align}
+ \mathbb U_q
+ &=(I_{2^m}\otimes Z)\,\mathbb N_q\,(I_{2^m}\otimes Z)^T,
+ \label{eq:universal-state-factor}\\
+ \mathbb M_q
+ &=(I_{2^m}\otimes Z_0)\,\mathbb N_q\,(I_{2^m}\otimes Z_0)^T.
+ \label{eq:chain-state-factor}
+\end{align}
+Because $Z$ has full column rank and $Z_0$ is invertible,
+\[
+ \operatorname{rank}\mathbb U_q
+ =\operatorname{rank}\mathbb N_q
+ =\operatorname{rank}\mathbb M_q.
+\]
+
+For each ordinary $q$-boundaried graph $H$, form its finite response vector
+$\rho_H$ indexed by $(F,A)$: it is zero unless $F=E_B(H)$, and at
+$(E_B(H),A)$ it equals the polynomial $R_H(A;x)$ from
+\cref{thm:separator-splitting}.  The splitting formula is precisely
+\[
+ C_q[H,K]=\rho_H^T\mathbb U_q\rho_K.
+\]
+Hence the infinite connection matrix factors through $\mathbb U_q$, and
+\[
+ r_q\le\operatorname{rank}\mathbb U_q
+ =\operatorname{rank}\mathbb M_q.
+\]
+
+\emph{Lower bound.}
+Index the chain-edge states by $i=(F,C)$.  By
+\cref{thm:chain-realization}, choose for each $i$ a decorated realization
+$(H_i,S_i)$ with boundary-edge set $F$ and chain state $C$, and put
+\[
+ Q_i=\Pi_{H_i,S_i}.
+\]
+Apply the pinning construction on \emph{both} sides.  If
+$i=(F,C)$ and $j=(G,D)$, \cref{cor:pinning} gives
+\begin{equation}\label{eq:pinned-pairing}
+ \Zpoly(Q_i\oplus_qQ_j;x)
+ =x^{|S_i|+|S_j|}K_{F\cup G}(C,D;x).
+\end{equation}
+Therefore the finite pairing matrix of the quantum graphs $Q_i$ is
+\begin{equation}\label{eq:DMD-pairing}
+ \bigl(\Zpoly(Q_i\oplus_qQ_j;x)\bigr)_{i,j}
+ =D\,\mathbb M_q\,D,
+ \qquad D_{ii}=x^{|S_i|}.
+\end{equation}
+The diagonal matrix $D$ is invertible over $\mathbb Q(x)$.
+
+Each $Q_i$ is a finite $\mathbb Q(x)$-linear combination of ordinary
+$q$-boundaried graphs.  Taking the finite union of all ordinary graphs that
+occur in these combinations, let $P$ be their coefficient matrix and let
+$C_q^{\rm fin}$ be the corresponding finite submatrix of the ordinary
+connection matrix.  Bilinearity of gluing gives
+\[
+ D\mathbb M_qD=P\,C_q^{\rm fin}P^T.
+\]
+Consequently
+\[
+ \operatorname{rank}\mathbb M_q
+ =\operatorname{rank}(D\mathbb M_qD)
+ \le \operatorname{rank}C_q^{\rm fin}
+ \le r_q.
+\]
+Together with the upper bound, this proves the theorem.
+\end{proof}
+
+The Boolean transform makes this rank additive over edge sectors.  For
+$R\subseteq\binom B2$ define
+\begin{equation}\label{eq:edge-mobius}
+ \widehat M_R(x)
+ =\sum_{E\supseteq R}(-1)^{|E\setminus R|}M_E(x).
+\end{equation}
+
+\begin{theorem}[Master rank formula]\label{thm:master-rank}
+For every $q\ge0$,
+\begin{equation}\label{eq:master-rank}
+ \boxed{
+ r_q=
+ \sum_{R\subseteq\binom{[q]}2}
+ \operatorname{rank}_{\mathbb Q(x)}\widehat M_R(x).
+ }
+\end{equation}
+In particular, if $r_q^{\circ}$ denotes the connection rank of the
+submatrix obtained by restricting \emph{both} local sides to $q$-boundaried
+graphs whose boundary induces no edge, then
+\begin{equation}\label{eq:independent-rank}
+ \boxed{r_q^{\circ}=c_q.}
+\end{equation}
+Consequently
+\begin{equation}\label{eq:rank-bounds}
+ c_q\le r_q\le 2^{\binom q2}c_q.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Let $L=\binom B2$ and index the subsets of $L$ in any linear extension of
+inclusion.  Define the Boolean zeta matrix
+\[
+ Z_{\rm edge}[F,R]=\mathbf1[F\subseteq R],
+ \qquad F,R\subseteq L.
+\]
+It is triangular with diagonal one and therefore invertible.  By the definition
+\eqref{eq:edge-mobius}, Boolean M\"obius inversion gives
+\[
+ M_E=\sum_{R\supseteq E}\widehat M_R.
+\]
+Hence the $(F,G)$ block of $\mathbb M_q$ satisfies
+\[
+ M_{F\cup G}
+ =\sum_{R\subseteq L}
+   \mathbf1[F\subseteq R]\mathbf1[G\subseteq R]\widehat M_R.
+\]
+Equivalently,
+\begin{equation}\label{eq:boolean-edge-congruence}
+ \boxed{
+ \mathbb M_q
+ =(Z_{\rm edge}\otimes I_{c_q})
+   \operatorname{diag}_{R\subseteq L}(\widehat M_R)
+   (Z_{\rm edge}\otimes I_{c_q})^T.
+ }
+\end{equation}
+Since the two zeta factors are invertible, rank is invariant under this
+congruence and equals the sum of the ranks of the diagonal blocks.  Combining
+with \cref{thm:finite-connection-model} proves \eqref{eq:master-rank}.
+
+For a one-edge boundary $L=\{e\}$, \eqref{eq:boolean-edge-congruence} is the
+concrete sanity check
+\[
+ \begin{pmatrix}
+ M_{\varnothing}&M_e\\
+ M_e&M_e
+ \end{pmatrix}
+ \sim
+ \begin{pmatrix}
+ M_{\varnothing}-M_e&0\\
+ 0&M_e
+ \end{pmatrix}.
+\]
+For the restricted connection matrix in which the boundary is required to be
+independent on each local side, only the single block $M_{\varnothing}$ is
+present.  Its rank is $c_q$ by \eqref{eq:independent-universal-rank} together
+with the realization-and-pinning lower bound.  Finally, every
+$\widehat M_R$ is a $c_q\times c_q$ matrix, which gives
+\eqref{eq:rank-bounds}.
+\end{proof}
+
+The quotient of the vector space of $q$-boundaried graphs by the radical of
+$C_q$ is therefore a finite-dimensional commutative graph algebra of dimension
+$r_q$ in the standard connection-matrix sense \cite{Lovasz2006}.  The case
+$q=1$ is the explicit four-dimensional algebra of
+\cref{thm:connection-rank}; higher $q$ need not admit such a small presentation,
+but \cref{thm:master-rank} determines their dimensions by a finite
+zero-forcing-specific kernel.
+
+\subsection{The first two nontrivial ranks}
+
+For $q=1$ there are no boundary edges and $c_1=4$, so the general theory
+recovers
+\[
+ r_1=4.
+\]
+For $q=2$, the chain set has size $c_2=52$ and there is one possible boundary
+edge $e$.  The Boolean transform has two sectors,
+\[
+ \widehat M_{\{e\}}=M_{\{e\}},
+ \qquad
+ \widehat M_{\varnothing}=M_{\varnothing}-M_{\{e\}}.
+\]
+
+\begin{proposition}[Machine-certified $q=2$ sector ranks]
+\label{prop:q2-certified-ranks}
+The exact finite matrices defined above satisfy
+\begin{equation}\label{eq:q2-ranks}
+ \operatorname{rank}_{\mathbb Q(x)}M_{\{e\}}=44,
+ \qquad
+ \operatorname{rank}_{\mathbb Q(x)}(M_{\varnothing}-M_{\{e\}})=16.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+This proposition is a finite exact computation, not an additional infinite
+structural argument.  The supplementary certificate
+\path{separator_rank_certificate.json} fixes the chain-state order,
+canonical hashes of the integer coefficient matrices, the specialization
+$x=2$, the prime $1{,}000{,}003$, and explicit nonsingular minor indices.
+The independent verifier
+\path{verify_separator_rank_certificate.py} reconstructs all matrices
+from the definitions in this paper.  Exact rational row reduction of the
+concatenated coefficient matrices gives upper ranks $44$ and $16$.  At $x=2$,
+exact elimination over $\mathbb F_{1{,}000{,}003}$ verifies nonsingular minors
+of orders $44$ and $16$, respectively, giving matching lower bounds because
+specialization cannot increase generic rank.  No floating-point rank decision
+is used.
+\end{proof}
+
+\begin{corollary}\label{cor:r2}
+\begin{equation}\label{eq:r2}
+ \boxed{r_2=60.}
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+Apply \cref{thm:master-rank,prop:q2-certified-ranks}:
+$r_2=44+16=60$.
+\end{proof}
+
+
+\section{Pendant-edge transfer}\label{sec:edge-extension}
+
+The rooted product combines branches sharing a root.  To recurse along a tree, we also need to move the root through an edge.
+
+Let $(H,u)$ be a rooted graph.  Form a new graph $E(H,u)$ by adjoining a new vertex $r$ adjacent only to $u$, and root the resulting graph at $r$.  We call this operation \emph{edge extension}.  Let
+\[
+  (P_0,P_1,A_0,A_1)
+\]
+be the profile of $(H,u)$, and let
+\[
+  (\widehat P_0,\widehat P_1,\widehat A_0,\widehat A_1)
+\]
+be the profile of $E(H,u)$.
+
+\begin{theorem}[Edge-extension transfer]\label{thm:edge-extension}
+The response polynomials satisfy
+\begin{align}
+  \widehat P_0&=A_1+xA,\label{eq:edgeP0}\\
+  \widehat P_1&=P_1+xP,\label{eq:edgeP1}\\
+  \widehat A_0&=P_0+A_0,\label{eq:edgeA0}\\
+  \widehat A_1&=0.\label{eq:edgeA1}
+\end{align}
+\end{theorem}
+
+\begin{proof}
+Let $T\subseteq V(H)\setminus\{u\}$.  A set counted by the new profile either contains $u$ or does not.
+
+Suppose first that $u$ is initially blue; the corresponding sets are $T\cup\{u\}$ and contribute a factor $x$.  With the new root $r$ blue and forbidden from forcing, the evolution inside $H$ is precisely the rooted process at $u$.  Hence the new branch is passive whenever $T$ is passive or active in $(H,u)$.  If $T$ is passive, then $u$ does not spend its force inside $H$; after $H$ has completed, $u$ can force an initially white $r$.  These sets contribute $xP$ to $\widehat P_1$.  If $T$ is active, then completion of $H$ consumes the unique force by $u$.  With $r$ initially white, the additional white neighbour $r$ prevents the required internal force, and the source indicator is zero.  These sets contribute $xA$ to $\widehat P_0$.
+
+Now suppose that $u$ is initially white.  If $T$ lies in $P_1$, then vertices of $H-u$ force $u$ and complete $H$ without a force by $u$; the vertex $u$ may then force $r$.  Hence $P_1$ contributes to $\widehat P_1$.  If $T$ lies in $A_1$, then vertices of $H-u$ force $u$, but the subsequent completion of $H$ requires the unique force by $u$.  The extra white neighbour $r$ blocks that force when $r$ is initially white.  Hence these sets are passive with source indicator zero, contributing $A_1$ to $\widehat P_0$.
+
+Finally, if $T$ lies in $P_0\cup A_0$, then $T$ does not force $u$.  With $r$ initially blue, the force $r\to u$ is both necessary and sufficient to place $H$ in the corresponding successful rooted state.  The new branch is therefore active and has source indicator zero.  This contributes $P_0+A_0$ to $\widehat A_0$.  An active state cannot source a pendant root, so $\widehat A_1=0$.
+\end{proof}
+
+It is useful to regard \cref{thm:edge-extension} as a linear operator on the four-component profile.  The rooted product is bilinear, while edge extension is linear; together they constitute a finite transfer calculus for trees.
+
+\subsection{Elementary checks}\label{subsec:sanity}
+
+The following profiles provide useful checks on the conventions.  The entries
+are ordered as $(P_0,P_1,A_0,A_1)$.
+\[
+\begin{array}{c|c|c}
+(H,r)&(P_0,P_1,A_0,A_1)&\Zpoly(H;x)\\
+\hline
+K_1&(1,0,0,0)&x\\
+K_2\text{, root at an endpoint}&(0,x,1,0)&2x+x^2\\
+P_3\text{, root at an endpoint}&(x,x+x^2,1,0)&2x+3x^2+x^3\\
+P_3\text{, root at the middle}&(0,x^2,0,2x)&2x+3x^2+x^3\\
+C_3&(2x,x^2,0,0)&3x^2+x^3\\
+C_4&(2x+x^2,2x^2+x^3,0,0)&4x^2+4x^3+x^4
+\end{array}
+\]
+For the star $K_{1,d}$ rooted at its centre, with $d\ge2$, the profile is
+$(0,x^d,0,dx^{d-1})$, which gives
+$\Zpoly(K_{1,d};x)=(1+x)(x^d+dx^{d-1})$.
+
+\section{The zero-forcing polynomial of a tree}\label{sec:trees}
+
+Let $T$ be a tree rooted at $r$.  For a vertex $v$, let $T_v$ denote the subtree induced by $v$ and its descendants, rooted at $v$.
+
+The one-vertex rooted graph has profile
+\begin{equation}\label{eq:singleton}
+  (P_0,P_1,A_0,A_1)=(1,0,0,0).
+\end{equation}
+Indeed, the empty set is passive when the unique vertex is supplied as the root, but it cannot force an initially white root.
+
+For each vertex $v$, recursively compute the profiles of its child subtrees.  Apply edge extension to each child profile, thereby viewing the child branch as rooted at $v$, and combine the resulting branch profiles by the rooted product.  At the global root, use \eqref{eq:normal-form}.
+
+\begin{theorem}[Exact tree algorithm]\label{thm:tree-algorithm}
+Let $T$ be a tree on $n$ vertices.  The preceding dynamic programme computes the complete zero-forcing polynomial $\Zpoly(T;x)$ exactly.  With schoolbook polynomial convolution, it uses $O(n^2)$ integer arithmetic operations on polynomial coefficients.
+
+Let $M(\ell)$ denote the bit complexity of multiplying two $\ell$-bit integers.  A coarse implementation bound is then $O(n^2M(n))$ bit operations.  In particular, the schoolbook estimate $M(n)=O(n^2)$ gives $O(n^4)$.  The output itself has $O(n^2)$ bits, and no optimized bit-complexity claim is intended.
+\end{theorem}
+
+\begin{proof}
+Correctness follows by induction on $|V(T_v)|$.  The base case is \eqref{eq:singleton}.  Assume the child profiles at $v$ are correct.  By \cref{thm:edge-extension}, edge extension gives the exact response of each child branch at $v$.  Since $T_v$ is the rooted wedge of these branches, \cref{thm:wedge} gives the exact profile at $v$.  The induction closes, and \cref{thm:normal-form} reconstructs $\Zpoly(T;x)$ at the global root.
+
+For the arithmetic complexity, let the child-subtree sizes at a vertex $v$ be $s_1,\dots,s_d$.  Sequentially multiplying the dual-number polynomials associated with the branches requires
+\[
+  O\!\left(\sum_{i=1}^d s_i+\sum_{1\le i<j\le d}s_is_j\right)
+\]
+coefficient operations.  The product $s_is_j$ charges pairs of vertices lying in distinct child subtrees of $v$.  Each unordered pair of vertices is charged at most once, namely at its lowest common ancestor.  Summed over all $v$, these terms are therefore $O(n^2)$.
+
+The linear edge-extension work is bounded by
+\[
+  \sum_{v\ne r}|V(T_v)|=O(n^2),
+\]
+with the path giving the extremal order.  Hence the total number of coefficient operations is $O(n^2)$.
+
+Every coefficient is at most $2^n$, and so has $O(n)$ bits.  There are $O(n^2)$ scalar arithmetic operations on $O(n)$-bit integers, which gives the stated bit bound.  Finally, $\Zpoly(T;x)$ has $n+1$ coefficients of $O(n)$ bits each, so its binary output length is $O(n^2)$.
+\end{proof}
+
+\begin{corollary}\label{cor:forest}
+The zero-forcing polynomial of an $n$-vertex forest is computable in $O(n^2)$ integer arithmetic operations on polynomial coefficients.
+\end{corollary}
+
+\begin{proof}
+A set is zero forcing in a disjoint union if and only if its intersection with every connected component is zero forcing.  The polynomial of a forest is the product of the polynomials of its tree components.  Apply \cref{thm:tree-algorithm} and multiply the component polynomials.
+\end{proof}
+
+\begin{remark}
+The algorithm returns the full distribution of zero-forcing sets.  In particular, it returns the zero-forcing number $Z(T)$, the number $z(T;Z(T))$ of minimum zero-forcing sets, and every higher coefficient in the same computation.
+\end{remark}
+
+\section{Transfer through blocks of bounded order}\label{sec:blocks}
+
+We now pass from one-point unions to the block-cut tree.  A \emph{block} is a maximal connected subgraph having no cut vertex.  Every bridge is treated as a two-vertex block.  An isolated vertex is treated as a one-vertex block only when it is a connected component by itself.  If a connected graph has a single block, that block is used as the root of the block-cut tree.  Put
+\[
+  \beta(G)=\max\{|V(B)|:B\text{ is a block of }G\}.
+\]
+The purpose of this section is to prove an exact algorithm whose exponential dependence is confined to $\beta(G)$.
+
+\subsection{Source and demand markers}
+
+Let $(H,v)$ be a rooted graph and fix $S\subseteq V(H)\setminus\{v\}$.  Its response state is one of
+\[
+  P_0,\quad P_1,\quad A_0,\quad A_1.
+\]
+The second index records whether $S$ sources an initially white root, while the letter records whether a supplied root has no remaining obligation or must expend its unique force inside $H$.
+
+For $\omega\in\{P_0,P_1,A_0,A_1\}$ define
+\[
+  \operatorname{src}(\omega)=
+  \begin{cases}
+  1,&\omega\in\{P_1,A_1\},\\
+  0,&\omega\in\{P_0,A_0\},
+  \end{cases}
+\]
+and
+\[
+  \operatorname{dem}(\omega)=
+  \begin{cases}
+  1,&\omega\in\{A_0,A_1\},\\
+  0,&\omega\in\{P_0,P_1\}.
+  \end{cases}
+\]
+A source marker colours the attachment vertex without external assistance.  A demand marker is a new white pendant vertex which must be forced by the attachment vertex.
+
+\begin{lemma}[Local source--demand replacement]\label{lem:replacement}
+Let $(H,v)$ be rooted, let $S\subseteq V(H)\setminus\{v\}$ have response state
+$\omega$, and let $J$ satisfy $V(H)\cap V(J)=\{v\}$.  Put
+$\Gamma=J\cup H$.  Form the marker graph $\Gamma_\omega$ from $J$ by adjoining
+a white pendant vertex $d_v$ at $v$ when $\operatorname{dem}(\omega)=1$.
+For an external initial set $Y\subseteq V(J)$, put
+\[
+  Y_\omega=Y\cup
+  \bigl(\{v\}\text{ if }\operatorname{src}(\omega)=1\bigr).
+\]
+Then, for every forbidden set $Q\subseteq V(J)\setminus\{v\}$,
+\begin{equation}\label{eq:replacement-projection}
+  \cl_{\Gamma}^{\neg Q}(Y\cup S)\cap V(J)
+  =
+  \cl_{\Gamma_\omega}^{\neg Q}(Y_\omega)\cap V(J).
+\end{equation}
+Moreover,
+\begin{equation}\label{eq:replacement-completion}
+  \cl_{\Gamma}^{\neg Q}(Y\cup S)=V(\Gamma)
+  \quad\Longleftrightarrow\quad
+  \cl_{\Gamma_\omega}^{\neg Q}(Y_\omega)=V(\Gamma_\omega).
+\end{equation}
+Consequently replacement preserves the four response states and failure at
+any distinguished external root $p\in V(J)\setminus\{v\}$.
+\end{lemma}
+
+\begin{proof}
+Fix restricted sequences realizing $C^-(S)$ and $C^+(S)$.  If $\omega$ is
+active, let $u$ be the unique vertex of
+$N_H(v)\setminus C^+(S)$ and fix a restricted sequence which completes $H$
+after the force $v\to u$.
+
+We prove the two inclusions in \eqref{eq:replacement-projection} by simulating
+arbitrary finite $Q$-restricted sequences.  Internal saturation steps are
+allowed to be inserted during the simulation; they change no vertex of
+$J\setminus\{v\}$.
+
+\smallskip
+\noindent\emph{Marker-to-branch simulation.}
+Begin in $\Gamma$ by putting the $H$-part in its canonical internal
+configuration.  If $v\in Y$, saturate directly from $S\cup\{v\}$ to
+$C^+(S)$.  If $v\notin Y$ and $\operatorname{src}(\omega)=1$, saturate from
+$S$ to $C^-(S)=C^+(S)$; this supplies $v$.  If $v\notin Y$ and the source bit
+is zero, saturate from $S$ to $C^-(S)$ and leave $v$ white.
+
+Now scan a finite legal sequence in $\Gamma_\omega$.  A force in $J$ whose
+forcing vertex is different from $v$ is copied whenever its target is still
+white, and is otherwise omitted.  Such a vertex has exactly the same
+neighbourhood in $\Gamma$ and $\Gamma_\omega$: no vertex of
+$J\setminus\{v\}$ is adjacent to $H\setminus\{v\}$ or to the demand
+leaf.  Hence the copied force remains legal unless its target has already
+become blue.  If a non-source branch first receives $v$ from $J$,
+copy that force and then saturate \emph{directly} from $S\cup\{v\}$ to
+$C^+(S)$, scanning the fixed saturation sequence from the current, possibly
+larger, blue set by \cref{lem:sequence-simulation}.  This corrects the branch
+state without changing $J\setminus\{v\}$.
+
+Suppose next that the marker sequence uses $v$ as forcing vertex.  If it
+forces a vertex of $J$, then no pending demand is present: while a demand leaf
+is white it is an additional white neighbour of $v$, and after $v$ forces that
+leaf all neighbours of $v$ are blue.  Hence the corresponding branch is
+passive and has no white neighbour in $H$, so the same external force is legal
+in $\Gamma$ unless its target is already blue.  If the marker force is $v\to d_v$, then all neighbours of $v$
+in $J$ are blue.  In the active branch, $u$ is the unique white neighbour of
+$v$ in $H$; replace $v\to d_v$ by $v\to u$ followed by the fixed restricted
+completion.  Every vertex of $J$ reached by the marker sequence is
+reached in $\Gamma$, and a completed marker graph expands to a completed
+original graph.
+
+\smallskip
+\noindent\emph{Branch-to-marker simulation.}
+Start with an arbitrary finite $Q$-restricted sequence in $\Gamma$.  First
+normalize its internal chronology.  If $v\in Y$, prepend a saturation from
+$S\cup\{v\}$ to $C^+(S)$.  If $v\notin Y$ and the source bit is one, prepend
+the fixed saturation from $S$ to $C^-(S)=C^+(S)$, \emph{regardless of which
+side coloured $v$ first in the original sequence}.  The source marker is
+therefore blue from the beginning.  Scanning the original sequence from this
+larger blue set and omitting forces whose targets have already become blue is
+valid by \cref{lem:sequence-simulation}; in particular, a later external
+force to $v$ may simply disappear.  If the source bit is zero, prepend a
+saturation from $S$ to $C^-(S)$.  When an external force first colours $v$,
+insert a saturation directly from $S\cup\{v\}$ to $C^+(S)$ before continuing.
+
+After this normalization, delete every force whose two endpoints lie in
+$H$, except for a force by $v$ in an active branch.  External forces with
+forcing vertex different from $v$ remain legal in the marker graph for the
+same neighbourhood reason: their external neighbourhoods are identical, and
+a force is omitted only when its target is already blue.  An external force
+by $v$ can occur only for a passive
+branch: before an active branch is completed, its vertex $u$ is an additional
+white neighbour of $v$, and after $v\to u$ the vertex $v$ has already used its
+unique force.  No pending marker demand obstructs a copied external
+force.  Finally, contract the active force $v\to u$ to the marker force
+$v\to d_v$ and delete any remaining internal steps.  In the total-completion
+case, the fixed internal completion may instead be appended after the
+corresponding marker force.  The marker force is legal because legality of
+$v\to u$ in $\Gamma$ implies that every neighbour of $v$ in $J$ is blue.
+This produces a legal marker sequence reaching every vertex of $J$ reached by
+the original sequence; completion of $\Gamma$ contracts to completion of
+$\Gamma_\omega$.
+
+Apply the first simulation to a maximal marker sequence and the second to a
+maximal original sequence.  Confluence from \cref{lem:closure} gives the two
+opposite inclusions in \eqref{eq:replacement-projection}, and the completion
+statements in the two simulations give \eqref{eq:replacement-completion}.
+
+To compare response states at an external root $p$, first take $Q=\{p\}$ and
+$p\notin Y$.  Equation \eqref{eq:replacement-projection} shows that $p$ is
+reached in one $p$-restricted process exactly when it is reached in the
+other, so the source indicators agree even when the process later stalls.
+Next take $p\in Y$ and compare both $Q=\{p\}$ and $Q=\varnothing$.
+By \eqref{eq:replacement-completion} the $p$-restricted completion and the
+unrestricted completion agree in the two models.  \Cref{thm:normal-form}
+therefore gives the same passive, active, or
+failure outcome, completing the proof.
+\end{proof}
+
+\subsection{The transfer table of a block}
+
+Let $B$ be a block, let $r\in V(B)$ be its parent attachment, and let
+\[
+  U\subseteq V(B)\setminus\{r\}
+\]
+be the child articulation vertices.  For each $u\in U$, suppose that a descendant rooted graph has response profile
+\[
+  \mathbf R_u=(P_{u,0},P_{u,1},A_{u,0},A_{u,1}).
+\]
+
+For a map
+\[
+  \omega:U\longrightarrow\{P_0,P_1,A_0,A_1\},
+\]
+let $B^\omega$ be obtained from $B$ by adjoining one pendant demand marker at every $u$ for which $\operatorname{dem}(\omega(u))=1$.  For $X\subseteq V(B)\setminus\{r\}$, take
+\[
+  X^\omega=X\cup
+  \{u\in U:\operatorname{src}(\omega(u))=1\}
+\]
+as the initial blue set in $B^\omega$, with $r$ excluded.  Let
+\[
+  \chi_{B,r}(X,\omega)
+\]
+denote the response category of this concrete rooted configuration.
+
+For $\gamma\in\{P_0,P_1,A_0,A_1\}$ define
+\begin{equation}\label{eq:block-transfer}
+  T_\gamma(B,r;\mathbf R)
+  =
+  \sum_{\substack{X\subseteq V(B)\setminus\{r\}\
+                   \omega\in\{P_0,P_1,A_0,A_1\}^{U}\\
+                   \chi_{B,r}(X,\omega)=\gamma}}
+  x^{|X|}
+  \prod_{u\in U} R_{u,\omega(u)},
+\end{equation}
+where, for example, $R_{u,A_1}=A_{u,1}$.
+
+\begin{theorem}[Exact block transfer]\label{thm:block-transfer}
+The rooted response profile of the union of $B$ and all descendant graphs attached at the vertices of $U$, rooted at $r$, is
+\[
+  \boxed{
+  \bigl(
+    T_{P_0}(B,r;\mathbf R),
+    T_{P_1}(B,r;\mathbf R),
+    T_{A_0}(B,r;\mathbf R),
+    T_{A_1}(B,r;\mathbf R)
+  \bigr).
+  }
+\]
+\end{theorem}
+
+\begin{proof}
+Choose an initial subset $X$ of the non-root vertices of $B$ and, independently, an initial subset in every descendant graph.  First discard descendant subsets that are blocked even when their attachment root is supplied.  Such a subset cannot occur in a globally successful configuration: if the whole configuration completed, supply that attachment vertex at time zero and delete the external step which first colours it; by monotone sequence simulation the descendant would then complete, a contradiction.  Every remaining descendant subset lies in exactly one of the four successful rooted response states.  By \cref{lem:replacement}, each such descendant graph may be replaced by its source and demand markers without changing the response category at $r$.  The resulting category is therefore $\chi_{B,r}(X,\omega)$, and the generating weight of all choices yielding the fixed pair $(X,\omega)$ is
+\[
+  x^{|X|}\prod_{u\in U}R_{u,\omega(u)}.
+\]
+The choices are disjoint and exhaustive.  Notice that a source state at $u$ and the independent choice $u\in X$ may lead to the same effective blue marker, but they are distinct original initial sets and carry weights differing by the factor $x$; the explicit factor $x^{|X|}$ records this distinction.  Summing according to the response category gives \eqref{eq:block-transfer}.
+\end{proof}
+
+The theorem gives a finite kernel for every block.  It is deliberately stated for an arbitrary block rather than only for a clique or a cycle.
+
+\subsection{Effective four-letter aggregation}\label{subsec:effective-block}
+
+The transfer table above keeps the choice of a block vertex separate from the
+four-state response of its descendant.  For computation these choices can be
+aggregated without losing information.  At a non-root child articulation $u$
+define
+\begin{align}
+ \lambda_u^{00}&=P_{u,0},
+ &\lambda_u^{10}&=xP_{u,0}+(1+x)P_{u,1},
+ \label{eq:block-letter-a}\\
+ \lambda_u^{01}&=A_{u,0},
+ &\lambda_u^{11}&=xA_{u,0}+(1+x)A_{u,1}.
+ \label{eq:block-letter-b}
+\end{align}
+The first bit is the effective initial colour seen by the block and the second
+is the pending-demand bit.  For example, a source state $P_1$ produces
+an effectively blue articulation whether or not the articulation itself was
+selected; the two disjoint choices have total weight $(1+x)P_{u,1}$.  At a
+non-articulation block vertex the only possible letters are $00$ and $10$,
+with weights $1$ and $x$.
+
+\begin{theorem}[Effective arbitrary-block kernel]\label{thm:effective-block}
+Let $B$ have order $m$, parent root $r$, and $q$ child articulations.  For each
+assignment of one effective letter to every vertex of $V(B)\setminus\{r\}$,
+adjoin a demand leaf at every letter with second bit one and initially colour
+every vertex whose first bit is one.  Classify the resulting concrete rooted
+marker graph as $P_0,P_1,A_0,A_1$, or failure, and sum the product of its local
+letter weights over each successful class.  The four sums are exactly the
+response profile of the decorated block.
+
+The number of concrete marker configurations is at most
+\[
+  4^q2^{m-1-q}=2^{m-1+q}\le4^{m-1}.
+\]
+\end{theorem}
+
+\begin{proof}
+Expand each local weight in \eqref{eq:block-letter-a}--\eqref{eq:block-letter-b}.
+Its summands are precisely the disjoint choices of descendant response state
+and selection/nonselection of the articulation that produce the same effective
+blue/demand pair.  By \cref{lem:replacement}, all summands aggregated into a
+fixed letter have identical behaviour inside the parent block.  Distributivity
+therefore turns the sum in \cref{thm:block-transfer} into the stated four-letter
+enumeration, with no loss or duplication of original initial sets.  Ordinary
+block vertices contribute only the two letters $00$ and $10$.
+\end{proof}
+
+\subsection{Clique blocks of arbitrary order}\label{subsec:clique-transfer}
+
+For a clique block the effective configurations admit a closed transfer.  Let
+$B=K_m$ have parent root $r$.  At each non-root vertex $v_i$, use the letter
+weights \eqref{eq:block-letter-a}--\eqref{eq:block-letter-b}, taking the
+singleton profile $(1,0,0,0)$ when no descendant is attached.  Put
+\[
+  B_i=\lambda_i^{10}+\lambda_i^{11},\qquad
+  D_i=\lambda_i^{11},\qquad
+  W_i=\lambda_i^{00}+\lambda_i^{01},
+\]
+and define
+\begin{align*}
+  B_*&=\prod_i B_i,
+  &D_*&=\prod_i D_i,\\
+  W_*&=\sum_i W_i\prod_{j\ne i}B_j,
+  &E_*&=\sum_i W_i\prod_{j\ne i}D_j.
+\end{align*}
+The term $B_*$ counts configurations in which every non-root clique vertex is
+effectively blue, $D_*$ the subfamily in which each such vertex also carries
+a demand, $W_*$ configurations with exactly one effective white vertex, and
+$E_*$ the latter subfamily in which every effective blue vertex carries a
+demand.
+
+\begin{theorem}[Clique transfer]\label{thm:clique-transfer}
+For a clique block of arbitrary order $m\ge2$, the response profile at its
+parent root is
+\[
+  \boxed{
+  P_0=D_*+W_*-E_*,\qquad
+  P_1=B_*-D_*,\qquad
+  A_0=E_*,\qquad
+  A_1=0.
+  }
+\]
+The four aggregates can be computed without division in one scan.  Starting
+with $B_*=D_*=1$ and $W_*=E_*=0$, at vertex $i$ update simultaneously
+\begin{align*}
+  B_*&\leftarrow B_*B_i,
+  &D_*&\leftarrow D_*D_i,\\
+  W_*&\leftarrow W_*B_i+B_*W_i,
+  &E_*&\leftarrow E_*D_i+D_*W_i,
+\end{align*}
+using the old values on the right.
+\end{theorem}
+
+\begin{proof}
+A blue clique vertex carrying a white demand leaf cannot force inside the
+clique: until its demand is discharged the leaf is an additional white
+neighbour, and the demand can be discharged only after every clique neighbour
+is blue.  Demand vertices are prohibited from supplying the unique force
+that colours a remaining white clique vertex.
+
+With the root supplied, two or more effectively white non-root vertices block
+all forces into the clique, so only the cases counted by $B_*$ and $W_*$ can
+succeed.  If all non-root vertices are effectively blue, the root-forbidden
+process completes.  It has source bit one exactly when at least one effective
+blue vertex has no demand, yielding $P_1=B_*-D_*$ and the all-demand remainder
+$D_*$ in $P_0$.
+
+If exactly one non-root vertex is effectively white, then with an initially
+white root there are two white clique vertices and no source force can begin,
+so the source bit is zero.  With the root supplied, a blue non-demand vertex
+can force the unique white clique vertex unless every effective blue vertex
+has a demand.  The former configurations have weight $W_*-E_*$ and are
+passive; in the latter, of weight $E_*$, the root must make the unique clique
+force and the state is active.  Once the clique is blue all demands can be
+discharged.  An active source state $A_1$ is therefore impossible.  The scan
+recurrences are the standard division-free updates for the displayed products
+and one-exception sums.
+\end{proof}
+
+\subsection{The block-cut dynamic programme}
+
+Let $G$ be connected.  Root its block-cut tree at a leaf block and choose a
+non-articulation vertex of that block as the global root.  Process nodes from
+the leaves towards the root.  At an articulation node combine all child-block
+profiles by \cref{thm:wedge}.  At a block node apply
+\cref{thm:block-transfer}.  At the global root apply
+\cref{thm:normal-form}.  For a disconnected graph, multiply the polynomials of
+its connected components.
+
+We use the following accounting convention.  A profile returned across an
+attachment vertex represents only the vertices strictly below that attachment;
+the attachment vertex itself is excluded and is assigned to the parent block.
+At an articulation node, the represented sets of the child blocks are
+pairwise disjoint.  At a block with parent attachment $r$, the represented set
+is the disjoint union of $V(B)\setminus\{r\}$ and the represented sets returned
+by its child articulations.  This convention also explains why each initial
+selection factor $x$ is introduced exactly once.
+
+\begin{lemma}[Pair charging on a decomposition tree]\label{lem:pair-charging}
+Let a rooted decomposition tree have $O(n)$ nodes, with an absolute constant.
+At every node, partition the newly combined represented set into pairwise
+disjoint pieces of sizes $s_1,\ldots,s_q$, and suppose the node returns its
+entire represented set as one piece to its parent.  Suppose that the polynomial
+work at that node is
+\[
+  O\!\left(\sum_i s_i+\sum_{i<j}s_is_j\right).
+\]
+If pieces are merged but never split on the path to the root, then the total
+work is $O(n^2)$ coefficient operations.
+\end{lemma}
+
+\begin{proof}
+Charge each occurrence in a linear term to the ordered pair consisting of the
+represented vertex and the current decomposition node.  Because the
+decomposition has $O(n)$ nodes, there are $O(n^2)$ such pairs.  Charge a term $s_is_j$ to unordered pairs of original
+vertices whose endpoints lie in the two corresponding pieces.  Each unordered
+pair is charged at the unique lowest node at which its endpoints lie in
+distinct pieces.  At every strict ancestor the two endpoints already belong to
+the same merged piece, so the pair is not charged again.  There are at most
+$\binom n2$ unordered pairs.
+\end{proof}
+
+\begin{theorem}[Bounded-block algorithm]\label{thm:bounded-block}
+Let $G$ have $n$ vertices and suppose every block has at most $b$ vertices.
+The transfer tables can be constructed using
+\[
+  O(4^{b}b^2n)
+\]
+elementary combinatorial operations.  After this preprocessing,
+$\Zpoly(G;x)$ is computable using
+\[
+  \boxed{O(4^{b}n^2)}
+\]
+integer arithmetic operations on polynomial coefficients under schoolbook
+polynomial convolution.  In particular, for fixed $b$ the complete polynomial is
+computable in polynomial time.
+\end{theorem}
+
+\begin{proof}
+Correctness follows by induction on the rooted block-cut tree from
+\cref{thm:wedge,thm:block-transfer,thm:normal-form}.
+
+For a block $B$ with parent attachment $r$ and $q$ child articulations, there
+are at most
+\[
+  4^q2^{|V(B)|-1-q}\le 4^{b-1}
+\]
+effective marker configurations by \cref{thm:effective-block}.  Each response category is determined by a constant number of restricted-closure
+computations on a graph with at most $2b-1$ vertices.  With an adjacency
+matrix, or adjacency lists together with a queue of currently legal forcing
+vertices, each such computation uses $O(b^2)$ elementary graph operations.
+This gives the stated combinatorial preprocessing bound over $O(n)$ blocks.
+
+For a fixed table entry, multiplying one chosen polynomial from child profiles
+of represented sizes $s_1,\ldots,s_q$ has the cost in
+\cref{lem:pair-charging}.  Multiplying by the number of table entries gives the
+factor $O(4^{b})$; the wedge operations at articulation nodes have the same
+form.  The lemma yields $O(4^{b}n^2)$ coefficient operations.
+\end{proof}
+
+\begin{remark}[Arithmetic model and bit complexity]\label{rem:bit-complexity}
+Every coefficient is at most $2^n$ and therefore has $O(n)$ bits.  The theorem
+is a unit-cost count of integer arithmetic operations on polynomial
+coefficients, not a RAM-time bound.
+With schoolbook integer multiplication, the preceding implementation has the
+coarse bit bound $O(4^{b}n^4)$, in addition to the combinatorial preprocessing.
+No optimal bit-complexity claim is intended.
+\end{remark}
+
+\section{An explicit cycle automaton}\label{sec:cactus}
+
+Finite automata have previously been associated with zero forcing: the
+zero-forcing automata of Shamsizadeh, Zahedi, Golmohamadian, and Abolpour, and
+the later $k$-forcing automata, use the vertices of the input graph as automaton
+states and encode a chosen forcing process and its recognized language
+\cite{ShamsizadehEtAl2021,ShamsizadehEtAl2024}.  The construction below is of
+a different kind.  It is a fixed-size fort-frontier recognizer whose input is
+a color--demand word around a cycle; its graph-independent five frontier
+states generate a $100$-element Boolean transition monoid and a certified
+$32$-state deterministic response quotient.  The claim here is the
+specific finite frontier representation and its transfer consequences, not
+the introduction of automata into zero forcing.
+
+A \emph{cactus} is a graph in which any two cycles have at most one vertex in common; equivalently, every edge belongs to at most one cycle.  Every block of a nontrivial connected cactus is either a bridge or a cycle; isolated vertices are handled separately.  The bounded-block algorithm is exponential in the order of a block, and the lengths of the
+cycle blocks need not be bounded.  We now exploit their cyclic order.  The result is
+a constant-state transfer algorithm which is independent of the cycle length.
+
+\subsection{Restricted forts}
+
+Let $H$ be a graph and let $Q\subseteq V(H)$.  A forcing process is
+\emph{$Q$-restricted} if no vertex of $Q$ is used as a forcing vertex.
+
+\begin{definition}
+A non-empty set $F\subseteq V(H)$ is a \emph{$Q$-fort} if
+\[
+  |N_H(v)\cap F|\ne 1
+  \qquad
+  \text{for every }v\in V(H)\setminus(F\cup Q).
+\]
+The usual forts are the $\varnothing$-forts.
+\end{definition}
+
+\begin{lemma}[Restricted fort criterion]\label{lem:q-fort}
+Let $B\subseteq V(H)$ and let $t\in V(H)$.
+\begin{enumerate}[label=\textnormal{(\roman*)}]
+\item The $Q$-restricted process from $B$ colours all of $H$ if and only if
+      $B$ intersects every $Q$-fort.
+\item The vertex $t$ belongs to the $Q$-restricted closure of $B$ if and only
+      if $B$ intersects every $Q$-fort containing $t$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Suppose that a $Q$-fort $F$ is initially white.  If a first force entered
+$F$, its forcing vertex would lie outside $F\cup Q$ and would have exactly one
+white neighbour in $F$, contrary to the definition.  Hence no vertex of $F$
+is ever coloured.
+
+Conversely, let $W$ be the set of vertices left white at the terminal
+restricted closure.  Every blue vertex outside $Q$ has either no neighbour in
+$W$ or at least two, since otherwise one further force would be available.
+Whenever $W\ne\varnothing$, it is a $Q$-fort disjoint from $B$.  If a
+specified vertex $t$ remains white, then $t\in W$.  These observations prove
+both statements.
+\end{proof}
+
+Consider a cycle block
+\[
+  C=v_0v_1\cdots v_{m-1}v_0,
+  \qquad v_0=r,
+\]
+where $r$ is the parent attachment.  After applying the replacement theorem
+of \cref{lem:replacement}, a non-root cycle vertex may carry a pending demand
+leaf.
+
+\begin{lemma}[Demand suppression]\label{lem:demand-suppression}
+A cycle vertex carrying a pending demand leaf never forces a cycle neighbour.
+Moreover, once all cycle vertices are blue, every pending demand can be
+completed.  Consequently, for the purpose of deciding whether the marked
+cycle completes, a demand vertex may be treated as a vertex forbidden from
+forcing along the cycle.
+\end{lemma}
+
+\begin{proof}
+Suppose that a demand vertex $v$ forces a cycle neighbour at some first such
+step.  Its demand leaf must already be blue; otherwise the leaf and the target
+cycle neighbour would be two white neighbours of $v$.  The leaf can only have
+been forced by $v$, and that earlier force required both cycle neighbours of
+$v$ to be blue.  This contradicts the choice of the later white target.
+
+Conversely, if all cycle vertices are blue, then each demand vertex has its
+leaf as its unique white neighbour and may force it.  The demands are
+independent, so all of them can be completed.
+\end{proof}
+
+\subsection{A five-state fort frontier}
+
+For $1\le i<m$, let $b_i$ record effective initial blueness at $v_i$, and let
+$d_i$ record a pending demand.  For a candidate fort $W$, put
+$w_i=\one_{\{v_i\in W\}}$.  At a non-root vertex the disjointness and fort
+conditions are
+\begin{equation}\label{eq:local-fort-condition}
+  b_iw_i=0,
+  \qquad
+  w_i=0\text{ and }d_i=0\Longrightarrow w_{i-1}=w_{i+1}.
+\end{equation}
+
+Before processing the letter at $v_i$, a frontier state is
+\[
+  (w_{i-1},w_i,h_i),
+  \qquad
+  h_i=\bigvee_{j=0}^{i}w_j.
+\]
+After choosing $w_{i+1}$ and checking \eqref{eq:local-fort-condition} at
+$v_i$, the state becomes
+\[
+  (w_i,w_{i+1},h_i\vee w_{i+1}).
+\]
+The only reachable triples are
+\[
+ q_0=(0,0,0),\ q_1=(0,0,1),\ q_2=(0,1,1),\
+ q_3=(1,0,1),\ q_4=(1,1,1).
+\]
+There is no sixth state because $h_i=0$ forces both displayed fort bits to be
+zero.
+
+For a letter $(b,d)$ define the Boolean $5\times5$ matrix $T_{bd}$ by
+\begin{equation}\label{eq:letter-transition}
+  T_{bd}\bigl((a,c,h),(c,z,h\vee z)\bigr)=1
+\end{equation}
+exactly when $bc=0$ and
+$c=0,d=0\Longrightarrow a=z$.  Row vectors act on the left, so the word
+$(b_1,d_1)\cdots(b_{m-1},d_{m-1})$ is represented by
+\[
+  M=T_{b_1d_1}\cdots T_{b_{m-1}d_{m-1}}.
+\]
+An entry $M_{ab}=1$ records a trace from initial frontier state $q_a$ to final
+state $q_b$.  The initial row encodes $(w_0,w_1,w_0\vee w_1)$; after the last
+letter the final column encodes $(w_{m-1},w_0,h)$, because closing the cycle
+sets the next bit equal to $w_0$.
+
+Let $E_R,E_O,E_S$ denote, respectively, an obstruction with the root blue and
+forbidden, an obstruction with the blue root allowed to force, and an
+obstruction containing an initially white root.  In the order
+$q_0,\ldots,q_4$,
+\begin{align}
+ E_R(M)&\Longleftrightarrow
+     \bigvee_{a\in\{0,2\}}\ \bigvee_{b\in\{1,3\}}M_{ab}=1,
+     \label{eq:ER}\\
+ E_O(M)&\Longleftrightarrow M_{01}\vee M_{23}=1,
+     \label{eq:EO}\\
+ E_S(M)&\Longleftrightarrow
+     \bigvee_{a\in\{3,4\}}\ \bigvee_{b\in\{2,4\}}M_{ab}=1.
+     \label{eq:ES}
+\end{align}
+For $E_R$ the root bit is $0$ and the final history bit enforces non-emptiness.
+For $E_O$ the root lies outside the fort and is allowed to force, so its two
+cycle neighbours must have equal fort bits.  Every ordinary fort counted by
+$E_O$ is also a root-restricted fort counted by $E_R$; hence
+$E_O\Rightarrow E_R$, and the response cases below are disjoint and
+exhaustive.  For $E_S$ the root bit is $1$; non-emptiness is automatic and the
+fort condition at the root is omitted because the source test is carried out
+in the root-forbidden process, even when the root itself belongs to the fort.
+
+\begin{example}[An unmarked triangle]\label{ex:triangle-automaton}
+For a triangle with no selected non-root vertex and no demand, the word is
+$00\,00$.  The product $T_{00}^2$ has, among others, the transition
+$q_0\to q_0$, corresponding to the empty trace, and transitions
+$q_2\to q_2,q_3,q_4$, corresponding to non-empty fort traces.  In particular
+$E_O(T_{00}^2)$ holds, so the readout is failure: a supplied root alone does
+not zero force a triangle.  If both non-root vertices are selected, the word
+is $10\,10$; the readout is $P_1$, as the selected vertices force an initially
+white root and the cycle is already complete when the root is supplied.
+\end{example}
+
+\begin{proposition}[Response readout]\label{prop:cycle-readout}
+The concrete response of the marked cycle word $\mathbf a$ is determined by
+$M=M(\mathbf a)$ as follows:
+\[
+\begin{array}{c|c}
+\text{condition}&\text{response}\\
+\hline
+E_O(M)&\text{failure},\\
+\neg E_R(M),\ \neg E_S(M)&P_1,\\
+\neg E_R(M),\ E_S(M)&P_0,\\
+E_R(M),\ \neg E_O(M),\ \neg E_S(M)&A_1,\\
+E_R(M),\ \neg E_O(M),\ E_S(M)&A_0.
+\end{array}
+\]
+\end{proposition}
+
+\begin{proof}
+By \cref{lem:demand-suppression,lem:q-fort}, the plus process with the root
+forbidden completes precisely when $E_R(M)$ is false.  This is the passive
+case.  With the root allowed, the plus process completes precisely when
+$E_O(M)$ is false.  By Theorem~\ref{thm:normal-form}, the response is active exactly when $E_R(M)$ is true and $E_O(M)$ is false: the root-forbidden saturation fails, but one root force followed by another restricted saturation succeeds.  If $E_O(M)$ is true, even the unrestricted plus process
+fails.  Finally, the source bit is one precisely when there is no restricted
+fort containing the root, that is, when $E_S(M)$ is false.
+\end{proof}
+
+The four matrices $T_{00},T_{10},T_{01},T_{11}$ generate a finite Boolean
+transition monoid.  The certificate described in
+\cref{app:automaton-certificate} lists all $100$ matrices in canonical
+breadth-first order and records their four right transitions and response
+outputs.  Response equivalence identifies matrices having the same output
+after every continuation word.  The supplied quotient map has $32$ classes.
+For every pair of distinct quotient states, the certificate supplies a
+continuation word on which their outputs differ; hence the quotient is minimal
+as a deterministic response automaton.  Minimality is not used for correctness
+or complexity--the unreduced $100$-state monoid already suffices--but the
+smaller quotient is used in the reference implementation.
+
+\subsection{Weighted cycle transfer}
+
+Let $\mathbf R_i=(P_{i,0},P_{i,1},A_{i,0},A_{i,1})$ be the descendant response
+profile at $v_i$; at a non-articulation vertex use the singleton profile
+$(1,0,0,0)$.  Summing over whether $v_i$ itself is selected gives the four
+letter weights
+\begin{align}
+ \lambda_i^{00}&=P_{i,0},
+ &\lambda_i^{10}&=xP_{i,0}+(1+x)P_{i,1},
+ \label{eq:cycle-weights-a}\\
+ \lambda_i^{01}&=A_{i,0},
+ &\lambda_i^{11}&=xA_{i,0}+(1+x)A_{i,1}.
+ \label{eq:cycle-weights-b}
+\end{align}
+The first coordinate is the effective blue bit and the second is the demand
+bit.  The aggregation is displayed explicitly below; ``selected'' contributes the
+factor $x$.
+\[
+\begin{array}{c|c|c|c}
+\text{descendant state}&v_i\text{ selected?}&(b_i,d_i)&\text{weight}\\
+\hline
+P_0&0&00&P_{i,0}\\
+P_0&1&10&xP_{i,0}\\
+P_1&0&10&P_{i,1}\\
+P_1&1&10&xP_{i,1}\\
+A_0&0&01&A_{i,0}\\
+A_0&1&11&xA_{i,0}\\
+A_1&0&11&A_{i,1}\\
+A_1&1&11&xA_{i,1}
+\end{array}
+\]
+The rows are disjoint at the level of original initial sets even when they
+produce the same effective letter, so no double counting occurs.
+
+Let $\mathcal A$ be either the $100$-state transition monoid or the $32$-state
+quotient.  Starting from the identity state $e$, define polynomial weights
+$f_i(s)$ by
+\[
+  f_0(e)=1,
+  \qquad
+  f_0(s)=0\quad(s\ne e),
+\]
+and
+\begin{equation}\label{eq:cycle-dp}
+  f_i(t)=
+  \sum_{\substack{s\in\mathcal A,
+                   (b,d)\in\{0,1\}^2\\
+                   s\cdot(b,d)=t}}
+  f_{i-1}(s)\lambda_i^{bd}.
+\end{equation}
+At the end, sum $f_{m-1}(s)$ over the states whose readout is respectively
+$P_0,P_1,A_0,A_1$.
+
+\begin{theorem}[Explicit cycle transfer]\label{thm:cycle-transfer}
+The four polynomials obtained from \eqref{eq:cycle-dp} are exactly the rooted
+response profile of the cycle block together with all descendant graphs
+attached at its non-root vertices.
+\end{theorem}
+
+\begin{proof}
+For every non-root cycle vertex, the four weights
+\eqref{eq:cycle-weights-a}--\eqref{eq:cycle-weights-b} form a disjoint and
+exhaustive partition of the choices of the block vertex and its descendant
+response state.  Their product is the generating weight of the corresponding
+marked word.  The deterministic transition in \eqref{eq:cycle-dp} computes its
+fort matrix, or its response-equivalence class.  By
+\cref{prop:cycle-readout}, the terminal readout is exactly its rooted response
+category.  Summing over all words proves the assertion.
+\end{proof}
+
+\subsection{The cactus algorithm}
+
+A cactus is processed on its rooted block-cut tree.  A connected component
+consisting of one isolated vertex is a base case: its polynomial is $x$, and
+its rooted profile is $(1,0,0,0)$.  Every other connected component is
+processed as follows.  The description is also pseudocode for the algorithm.
+\begin{enumerate}[label=\textnormal{(\arabic*)}]
+\item In each connected component choose a leaf block, and choose a
+non-articulation vertex $r$ of that block as global root.
+\item Process the block-cut tree in postorder.
+\item At an articulation $v$, combine all already processed child-block
+profiles by the rooted product.  The resulting profile represents the entire
+descendant graph attached at $v$; the initial choice of $v$ itself is not yet
+counted.
+\item If a block is a bridge $rv$, apply the pendant-edge transfer to move the
+profile at $v$ to the parent attachment $r$.
+\item If a block is a cycle, orient it from its parent attachment
+$v_0=r$ as $v_0v_1\cdots v_{m-1}v_0$.  Insert at each $v_i$, $i\ge1$, the
+profile obtained in step~(3), or the singleton profile when no child block is
+present.  Apply the weighted cycle transfer.  The factors $x$ in
+\eqref{eq:cycle-weights-a}--\eqref{eq:cycle-weights-b} count the cycle vertex
+$v_i$ exactly once.
+\item Return the resulting block profile to the parent articulation.  At the
+global root apply \cref{thm:normal-form}; multiply component polynomials for a
+disconnected cactus.
+\end{enumerate}
+
+\begin{theorem}[Quadratic cactus algorithm]\label{thm:cactus}
+The complete zero-forcing polynomial of an $n$-vertex cactus graph can be
+computed exactly with $O(n)$ graph-structural preprocessing and
+\[
+  \boxed{O(n^2)}
+\]
+integer arithmetic operations on polynomial coefficients under schoolbook
+polynomial convolution.  The
+algorithm permits cycles of arbitrary length.  A coarse schoolbook bit bound
+is $O(n^4)$.
+\end{theorem}
+
+\begin{proof}
+Correctness follows by postorder induction from
+\cref{thm:wedge,thm:edge-extension,thm:cycle-transfer}.  Every non-root graph
+vertex is counted exactly once: at a bridge transfer if it is the child
+endpoint of a bridge block, or in one of the eight rows of the cycle-letter
+table if it lies in a cycle block.  Articulation products combine descendant
+choices but introduce no new factor $x$.
+
+The block-cut tree and cyclic orders are found in linear time.  The automaton
+has constant size.  At a cycle block, let $s_i$ be one plus the number of
+vertices represented by the descendant profile inserted at the non-root cycle
+vertex $v_i$.  The added one is $v_i$ itself; the parent attachment $v_0$ is
+excluded.  These pieces are pairwise disjoint under the convention preceding
+\cref{lem:pair-charging}.  The scan costs
+\[
+  O\!\left(\sum_i s_i+\sum_{i<j}s_is_j\right)
+\]
+coefficient operations, up to an absolute automaton constant.  Wedge products
+and bridge transfers have the same form.  Apply
+\cref{lem:pair-charging} to obtain $O(n^2)$ coefficient operations.  The bit
+bound follows from the $O(n)$-bit coefficient bound as in
+\cref{rem:bit-complexity}.
+\end{proof}
+
+\begin{theorem}[Clique--cycle block algorithm]\label{thm:clique-cycle}
+Let $G$ be an $n$-vertex graph every block of which is either a clique or a
+cycle (with $K_2$ serving as a bridge block).  Then the complete zero-forcing
+polynomial can be computed exactly after $O(n+|E(G)|)$ structural preprocessing
+using
+\[
+  \boxed{O(n^2)}
+\]
+integer arithmetic operations on polynomial coefficients under schoolbook
+polynomial convolution.  The block orders and cycle lengths are unrestricted.
+Consequently this gives an explicit quadratic coefficient-operation algorithm
+for every block graph as well as every cactus, and more generally for every
+block-cactus graph.  The class has unbounded treewidth, since it contains
+$K_m$ for every $m$, but it has bounded clique-width; see
+\cite{Gurski2017} and the discussion in \cref{sec:treewidth}.
+\end{theorem}
+
+\begin{proof}
+Build the block-cut forest in $O(n+|E(G)|)$ time and process it in postorder.
+At articulation nodes use \cref{thm:wedge}; at clique blocks use
+\cref{thm:clique-transfer}; and at non-clique cycle blocks use
+\cref{thm:cycle-transfer}.  (The edge $K_2$ may equivalently be handled by
+\cref{thm:edge-extension}.)  Each block transfer performs only a constant
+number of polynomial convolutions per represented piece.  The represented
+interiors returned by distinct children are disjoint, so the charging argument
+of \cref{lem:pair-charging} gives $O(n^2)$ coefficient operations globally.
+For dense clique blocks the input itself may have $\Theta(n^2)$ edges, which is
+why the structural preprocessing is stated as $O(n+|E(G)|)$ rather than
+$O(n)$.
+\end{proof}
+
+\subsection{Independent random initial sets and vertex influence}\label{subsec:influence}
+
+The same transfer is naturally multivariate.  Let every vertex $v$ be selected
+independently with probability $p_v$, and write
+\[
+ Q_G(\mathbf p)=\Pr_{\mathbf p}(S\text{ is a zero-forcing set of }G).
+\]
+Equivalently, one may regard
+$F_G(\mathbf y)=\sum_{S\text{ zero forcing}}\prod_{v\in S}y_v$ as a
+multivariate generating function represented by a division-free arithmetic
+circuit rather than by its exponentially large expanded coefficient table.
+
+For a non-root block vertex $v_i$ carrying descendant profile
+\[
+ (P_{i,0},P_{i,1},A_{i,0},A_{i,1}),
+\]
+the four effective source--demand letter weights become
+\begin{align}
+ \lambda_i^{00}&=(1-p_i)P_{i,0}, &
+ \lambda_i^{10}&=p_iP_{i,0}+P_{i,1},\label{eq:prob-letters-a}\\
+ \lambda_i^{01}&=(1-p_i)A_{i,0}, &
+ \lambda_i^{11}&=p_iA_{i,0}+A_{i,1}.\label{eq:prob-letters-b}
+\end{align}
+At the final root $r$ the readout is
+\begin{equation}\label{eq:prob-readout}
+ Q_G(\mathbf p)=p_r(P_0+A_0)+P_1+A_1.
+\end{equation}
+
+\begin{corollary}[All vertex influences in linear scalar arithmetic]
+\label{cor:influences}
+On a cactus, or more generally on a graph whose blocks are cliques or cycles,
+with its block structure supplied, $Q_G(\mathbf p)$ and all first partial
+derivatives $\partial Q_G/\partial p_v$ can be evaluated using $O(n)$ scalar
+arithmetic operations.  If the structure is not supplied, add
+$O(n+|E(G)|)$ preprocessing.
+Moreover,
+\[
+ \frac{\partial Q_G}{\partial p_v}
+ =\Pr_{\mathbf p_{-v}}(S\cup\{v\}\text{ succeeds})
+  -\Pr_{\mathbf p_{-v}}(S\text{ succeeds}),
+\]
+so by monotonicity this derivative is the probability that $v$ is pivotal.
+\end{corollary}
+
+\begin{proof}
+Replace every factor $x$ and every unselected weight $1$ in the clique/cycle
+transfer by the corresponding probabilities as in
+\eqref{eq:prob-letters-a}--\eqref{eq:prob-letters-b}.  The postorder algorithm
+then forms a division-free straight-line circuit with $O(n)$ addition and
+multiplication gates and terminal readout \eqref{eq:prob-readout}.  The
+Baur--Strassen theorem gives all first partial derivatives of an arithmetic
+circuit with only constant-factor overhead \cite{BaurStrassen1983}; equivalently,
+one may run the usual reverse-mode adjoint sweep on this particular circuit.
+All derivatives require $O(n)$ scalar operations.  The displayed identity
+follows by conditioning on whether $v$ is selected; multilinearity makes the
+derivative the difference of the two conditional success probabilities.
+Zero-forcing success is increasing under enlarging the initial set, so the
+difference is the pivotal probability.  The contribution specific to the
+present setting is the explicit division-free $O(n)$-gate heterogeneous
+success circuit, not the general reverse-mode differentiation principle.
+\end{proof}
+
+\begin{corollary}[Zero influence and fort-irrelevant vertices]
+\label{cor:zero-influence-fort}
+For any finite graph $G$, fix $v\in V(G)$ and suppose $0<p_u<1$ for every
+$u\ne v$.  Then
+\[
+\begin{aligned}
+ \frac{\partial Q_G}{\partial p_v}=0
+ &\quad\Longleftrightarrow\quad
+ v\text{ belongs to no inclusion-minimal zero-forcing set},\\
+ &\quad\Longleftrightarrow\quad
+ v\text{ belongs to no inclusion-minimal fort}.
+\end{aligned}
+\]
+\end{corollary}
+
+\begin{proof}
+Conditioning on the membership of $v$ in the product measure, or simply
+differentiating the multilinear polynomial $Q_G$, shows that the derivative is
+the probability, over subsets of $V(G)\setminus\{v\}$, that adding $v$
+changes failure into success.  Full
+support on the other vertices makes this probability zero exactly when no
+subset $T\subseteq V(G)\setminus\{v\}$ is failed while $T\cup\{v\}$ is
+zero forcing.  Such a witness exists exactly when $v$ belongs to an
+inclusion-minimal zero-forcing set: minimize $T\cup\{v\}$ among its
+zero-forcing subsets containing $v$; conversely removing $v$ from a minimal
+zero-forcing set must fail.  Jacob's irrelevance theorem identifies the
+vertices lying in no minimal zero-forcing set with those lying in no minimal
+fort \cite[Theorem~2.4]{Jacob2025}.  The last equivalence is an application
+of that established characterization, not a new characterization of
+irrelevant vertices.
+\end{proof}
+
+\section{Logical bounded-width context}\label{sec:treewidth}
+
+The zero-forcing predicate is $\mathrm{MSO}_1$-definable: with vertex-set
+variables $S$ and $F$, one says that $F$ is a nonempty fort and that $S$ meets
+every fort.  Standard counting metatheorems therefore evaluate
+$\Zpoly(G;x)$ on effectively bounded clique-width classes when an appropriate
+expression is supplied; fixed-treewidth consequences follow from the usual
+MSO framework \cite{ArnborgLagergrenSeese1991,CourcelleMakowskyRotics2001}.
+These observations are background, not tractability claims of this paper.
+
+They are relevant to the block-cactus application.  Gurski records that the
+clique-width of a graph is at most two more than the maximum clique-width of a
+block \cite[Sec.~3.6]{Gurski2017}.  Since cliques and cycles have bounded
+clique-width, the class treated in \cref{thm:clique-cycle} is already covered
+by the general metatheory.  What \cref{thm:clique-cycle} adds is an explicit
+small-state construction, a direct implementation, and an audited
+$O(n^2)$ coefficient-operation bound.  Recent parameterized work on minimum
+zero-forcing sets and related variants concerns a different optimization or
+decision problem \cite{BhyravarapuEtAl2025,GoettlicherEtAl2026}.
+
+\section{Computational verification}\label{sec:verification}
+
+The computations serve as checks or as finite certificates; none is used in
+place of an infinite proof.  Independent subset enumeration was used wherever
+practical.  The main checks are summarized below; the supplement contains the
+full logs, seeds, expected outputs, and commands.
+
+\begin{center}
+\begin{tabular}{@{}p{0.64\textwidth}p{0.28\textwidth}@{}}
+\toprule
+Check & Cases or certificate size \\
+\midrule
+Root normal form, edge transfer, wedges, articulation cases, and trees
+  & $34{,}625$ \\
+Atlas and random bounded-block, cactus, and block-cactus comparisons
+  & $2{,}583$ \\
+Marked cycle and clique words
+  & $174{,}756$ \\
+Projected-closure replacement and decorated clique/block checks
+  & $69{,}966$ \\
+Separator compatibility checks and realized chain states
+  & $8{,}284$ \\
+Cycle certificate
+  & $100$ matrices, $32$ states, $496$ witnesses \\
+Two-terminal separator-rank certificate
+  & ranks $52,44,16,60$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The separator verifier is independent of the block and cycle code.  It builds
+the atom posets and chain states from the definitions, checks all $52$
+two-terminal chain realizations by direct prefort enumeration, samples the
+three-terminal construction, and reconstructs the $q=2$ coefficient matrices.
+Exact rational elimination gives the symbolic upper ranks.  Specialization at
+$x=2$, followed by elimination modulo $1{,}000{,}003$, gives matching lower
+ranks.
+
+The cycle verifier reconstructs the four $5\times5$ frontier matrices,
+regenerates the $100$-element Boolean transition monoid, checks the quotient to
+$32$ response states, and verifies a distinguishing continuation for each of
+the $496$ unordered pairs.  The full audit also reconstructs the rank-four
+connection minor by direct subset enumeration and obtains
+$4x^6(x+1)^2$.
+
+\section{Discussion}\label{sec:discussion}
+
+The separator theorem gives an explicit interface for every fixed boundary
+size.  Its three ingredients are the prefort atoms, the compatibility rule at
+the boundary, and the chain compression.  The realization theorem is what
+turns the last step from an upper-bound construction into an exact connection
+rank statement.  The four-state rooted calculus is the case $q=1$.
+
+For independent boundaries the dimension is explicit:
+$r_q^{\circ}=c_q$.  Boundary edges add Boolean M\"obius sectors, leading to
+\eqref{eq:master-rank}; already $c_2=52$ and $r_2=60$.  A natural next problem
+is to understand the ranks of those sectors in closed form or asymptotically.
+It would also be useful to find presentations of the higher connection
+algebras comparable to the source/capacity presentation at $q=1$, and to see
+which graph families force similarly small quotients of the universal
+interface.
+
+The explicit one-terminal algorithms have a different purpose.  The general
+separator algebra need not be an efficient implementation when $q$ is large,
+whereas trees, cliques, and cycles collapse to very small concrete states.
+This is why the structural separator theory and the block algorithms are kept
+in the same paper.
+
+We use existing machinery where it is appropriate.  Connection matrices and
+graph algebras are classical \cite{Lovasz2006,KotekMakowsky2014}; forts and
+fort transversals are standard in zero forcing
+\cite{AIM2008,CameronHogbenEtAl2026}; minimal-fort enumeration is treated in
+\cite{BeckerEtAl2025,CameronLi2025,DatKenter2026,AbiadGhasemiNezhad2026}; and
+finite automata for forcing processes occur in
+\cite{ShamsizadehEtAl2021,ShamsizadehEtAl2024}.  The claims made here concern
+the explicit separator interface, its chain quotient and realization, the
+resulting exact connection-rank formula, and the full-polynomial transfer
+systems.  We do not claim priority for the general existence of connection
+matrices, forts, automata, bounded-width tractability, or automatic
+differentiation.
+
+\appendix
+\section{Finite certificates}\label{app:automaton-certificate}
+
+Two finite claims in the paper are supplied with independent certificates.
+The file \texttt{cycle\_automaton\_certificate.json} lists the generated
+$5\times5$ Boolean matrices, the quotient map to the $32$ response states,
+and a distinguishing continuation for each unordered pair of quotient states.
+The verifier rebuilds the monoid from the four generators in
+\eqref{eq:letter-transition} before checking the listed data.
+
+The file \texttt{separator\_rank\_certificate.json} records the exact
+coefficient-span and specialization data used for the $q=2$ calculation.  Its
+verifier reconstructs the finite kernels, checks the stated minors, and
+repeats the modular rank calculation.  Both verifiers are independent of the
+main dynamic-programming implementations.  The checksum manifest in the
+supplement identifies the files used for the reported calculations.
+
+\section*{Data and code availability}
+
+The supplementary archive contains the source code, the two certificate files
+and their verifiers, the separator-realization audits, the rooted/tree/block/
+cycle implementations, pinned dependencies, expected outputs, and a checksum
+manifest.  No external data set is used.  The complete audit is run with
+\texttt{python run\_all\_audits.py}.  The release environment used for the
+final audit was Python~3.13.5, NetworkX~3.6.1, and pdf\TeX{} 1.40.26
+(TeX Live 2025/dev).  A permanent repository or archival DOI, once assigned,
+should point to the checksum-verified supplement distributed with this
+manuscript.
+
+\section*{Acknowledgements}
+
+The author thanks the developers and maintainers of NetworkX for the graph
+enumeration and verification tools used in the computational audit.
+
+\begin{thebibliography}{99}
+
+\bibitem{AIM2008}
+AIM Minimum Rank -- Special Graphs Work Group,
+\emph{Zero forcing sets and the minimum rank of graphs},
+Linear Algebra Appl. \textbf{428} (2008), 1628--1648.
+
+\bibitem{BoyerEtAl2019}
+K. Boyer, B. Brimkov, S. English, D. Ferrero, A. Keller, R. Kirsch,
+M. Phillips, and C. Reinhart,
+\emph{The zero forcing polynomial of a graph},
+Discrete Appl. Math. \textbf{258} (2019), 35--48.
+
+\bibitem{CameronEtAl2026}
+B. Cameron, J. Janssen, R. Mathew, and Z. Zhang,
+\emph{An approximation algorithm for zero forcing},
+Discrete Appl. Math. \textbf{383} (2026), 227--242.
+
+\bibitem{CurtisEtAl2024}
+B. Curtis, L. Gan, J. Haddock, R. Lawrence, and S. Spiro,
+\emph{Zero forcing with random sets},
+Discrete Math. \textbf{347} (2024), Article 113944.
+
+\bibitem{AbiadGhasemiNezhad2026}
+A. Abiad and S. Ghasemi Nezhad,
+\emph{Fort abundance in zero forcing},
+arXiv:2609.11754, 2026.
+
+\bibitem{BeckerEtAl2025}
+P. Becker, T. R. Cameron, D. Hanely, B. Ong, and J. P. Previte,
+\emph{On the number of minimal forts of a graph},
+Graphs Combin. \textbf{41} (2025), Article 25,
+DOI: \url{https://doi.org/10.1007/s00373-025-02891-z}.
+
+\bibitem{CameronLi2025}
+T. R. Cameron and K. Li,
+\emph{On the minimal forts of trees},
+arXiv:2512.12874, 2025.
+
+\bibitem{DatKenter2026}
+N. H. Dat and F. H. J. Kenter,
+\emph{On the number of zero forcing minimal forts on trees},
+arXiv:2605.07298, 2026.
+
+\bibitem{BaurStrassen1983}
+W. Baur and V. Strassen,
+\emph{The complexity of partial derivatives},
+Theoret. Comput. Sci. \textbf{22} (1983), 317--330.
+
+\bibitem{BhyravarapuEtAl2025}
+S. Bhyravarapu, L. Kanesh, M. Kundu, D. Lokshtanov, and S. Saurabh,
+\emph{Parameterized algorithms for Power Edge Set and Zero Forcing Set},
+in \emph{Combinatorial Algorithms (IWOCA 2025)}, Lecture Notes in Computer
+Science \textbf{15885}, 349--361, Springer, 2025,
+DOI: \url{https://doi.org/10.1007/978-3-031-98740-3_25}.
+
+\bibitem{GoettlicherEtAl2026}
+M. G{\"o}ttlicher, L. Hofmann, and C. Niederbudde,
+\emph{From FPT to W[P]: Classifying Zero Forcing, Power Domination and Their Variants},
+arXiv:2609.29966, 2026.
+
+\bibitem{McKayRayValliere2026}
+A. McKay, A. Ray, and J. Valliere,
+\emph{Maximizing the discrepancy between zero forcing parameters relative to graph order},
+arXiv:2609.35522, 2026.
+
+\bibitem{German2026}
+S. German,
+\emph{The path-extremal conjecture for zero forcing: distance-hereditary graphs and a split-decomposition reduction},
+in \emph{Computing and Combinatorics (COCOON 2026)}, 409--422,
+Springer, 2026, DOI: \url{https://doi.org/10.1007/978-981-92-3309-0_31}.
+
+\bibitem{MenonSingh2025}
+K. Menon and A. Singh,
+\emph{Exploring the influence of graph operations on zero forcing sets},
+Discrete Math. \textbf{348} (2025), Article 114516.
+
+\bibitem{Jacob2025}
+B. C. Jacob,
+\emph{Well-failed graphs},
+Australasian J. Combin. \textbf{93} (2025), 359--374.
+
+\bibitem{ShamsizadehEtAl2021}
+M. Shamsizadeh, M. M. Zahedi, M. Golmohamadian, and K. Abolpour,
+\emph{Zero-forcing finite automata},
+Int. J. Ind. Math. \textbf{13} (2021), 477--488.
+
+\bibitem{ShamsizadehEtAl2024}
+M. Shamsizadeh, M. M. Zahedi, K. Abolpour, and M. De la Sen,
+\emph{Recognizable languages of $k$-forcing automata},
+Math. Comput. Appl. \textbf{29} (2024), Article 32.
+
+\bibitem{Wang2026}
+X. Wang,
+\emph{Modular compression of leaky forts and leaky forcing polynomials},
+preprint, May 2026, DOI: 10.5281/zenodo.20388397.
+
+\bibitem{AbiadMoghaddas2025}
+A. Abiad and M. Moghaddas,
+\emph{On the $Z_q$-forcing number: computational approach and exact values},
+J. Phys. Complexity \textbf{6} (2025), Article 045005.
+
+\bibitem{ArnborgLagergrenSeese1991}
+S. Arnborg, J. Lagergren, and D. Seese,
+\emph{Easy problems for tree-decomposable graphs},
+J. Algorithms \textbf{12} (1991), 308--340.
+
+\bibitem{BrimkovFastHicks2019}
+B. Brimkov, C. C. Fast, and I. V. Hicks,
+\emph{Computational approaches for zero forcing and related problems},
+European J. Oper. Res. \textbf{273} (2019), 889--903.
+
+\bibitem{CourcelleMakowskyRotics2001}
+B. Courcelle, J. A. Makowsky, and U. Rotics,
+\emph{On the fixed parameter complexity of graph enumeration problems definable in monadic second-order logic},
+Discrete Appl. Math. \textbf{108} (2001), 23--52.
+
+\bibitem{Gurski2017}
+F. Gurski,
+\emph{The behavior of clique-width under graph operations and graph transformations},
+Theory Comput. Syst. \textbf{60} (2017), 346--376.
+
+\bibitem{Lovasz2006}
+L. Lov\'asz,
+\emph{The rank of connection matrices and the dimension of graph algebras},
+European J. Combin. \textbf{27} (2006), 962--970.
+
+\bibitem{KotekMakowsky2014}
+T. Kotek and J. A. Makowsky,
+\emph{Connection matrices and the definability of graph parameters},
+Logical Methods in Computer Science \textbf{10} (2014), no.~4, 1--33.
+
+\bibitem{CameronHogbenEtAl2026}
+T. R. Cameron, L. Hogben, F. H. J. Kenter, S. A. Mojallal, and H. Schuerger,
+\emph{Forts, (fractional) zero forcing, and Cartesian products of graphs},
+Australasian J. Combin. \textbf{95} (2026), 214--247.
+
+\bibitem{Row2012}
+D. D. Row,
+\emph{A technique for computing the zero forcing number of a graph with a cut-vertex},
+Linear Algebra Appl. \textbf{436} (2012), 4423--4432.
+
+\end{thebibliography}
+
+\end{document}

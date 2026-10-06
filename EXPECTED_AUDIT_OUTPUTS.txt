@@ -1,0 +1,80 @@
+Expected count-bearing outputs (elapsed times may vary)
+=======================================================
+
+python zero_forcing_separator_audits.py
+  chain counts: [1, 4, 52, 1636, 95668, 8977444, 1234728052, 234059341156]
+  q=2 rank certificate includes:
+    chain_count_q2: 52
+    independent_boundary_coefficient_span_rank_Q: 52
+    edge_boundary_coefficient_span_rank_Q: 44
+    edge_mobius_coefficient_span_rank_Q: 16
+    full_coefficient_span_rank_Q: 60
+    independent_boundary_rank_mod_p_at_x_2: 52
+    edge_boundary_rank_mod_p_at_x_2: 44
+    edge_mobius_correction_rank_mod_p_at_x_2: 16
+    full_rank_mod_p_at_x_2: 60
+    full_coefficient_ranks_mod_p: (60, 30, 6)
+  worked q=2 example: H_atoms=[(1,1),(2,2)], K_atoms=[(2,2)], kernel coefficients=(0,2,1), direct coefficients=(0,2,1)
+  q=2 chain realizations: 52
+  q=3 sampled chain realizations: 40
+  compatibility join-closure checks: 8192
+  all separator audits passed
+
+
+python verify_separator_rank_certificate.py separator_rank_certificate.json
+  chain states q=2: 52
+  independent: coefficient-span rank 52, rank mod 1000003 at x=2 52
+  edge_present: coefficient-span rank 44, rank mod 1000003 at x=2 44
+  edge_mobius: coefficient-span rank 16, rank mod 1000003 at x=2 16
+  full q=2 rank: 60
+  separator-rank certificate verified
+
+python verify_cycle_automaton_certificate.py cycle_automaton_certificate.json
+  generated monoid size: 100
+  reachable quotient states: 32
+  distinguishing pairs: 496
+  embedded algorithm table verified: zero_forcing_cactus_dp.py
+
+python zero_forcing_tree_dp.py --audit-atlas
+  Root normal-form cases passed: 6781
+  Edge-extension cases passed: 6781
+  Cut-vertex cases passed: 682
+
+python zero_forcing_rooted_audits.py --audit-wedges
+  Ordered rooted wedges passed: 19044 (138 x 138)
+
+python zero_forcing_rooted_audits.py --audit-random-wedges 350 --seed 20260726
+  Random rooted wedges passed: 350
+
+python zero_forcing_tree_dp.py --audit-trees 12
+  Audit passed for 987 trees
+
+python zero_forcing_block_dp.py --audit-atlas
+  All 996 connected graph-atlas graphs passed
+
+python zero_forcing_block_dp.py --audit-random 500 --seed 20260726
+  All 500 random bounded-block graphs passed (seed=20260726)
+
+python zero_forcing_cactus_dp.py --audit-automaton
+  Transition monoid size: 100
+  Response quotient size: 32
+  Concrete marked cycles checked: 87376
+
+python zero_forcing_cactus_dp.py --audit-atlas
+  All 220 cactus graph-atlas graphs passed
+
+python zero_forcing_cactus_dp.py --audit-random 300 --seed 20260726
+  All 300 random cactus graphs passed (seed=20260726)
+
+python zero_forcing_cactus_dp.py --audit-mixed-atlas
+  All 267 clique/cycle-block graph-atlas graphs passed
+
+python zero_forcing_cactus_dp.py --audit-mixed-random 300 --seed 20260906
+  All 300 random clique/cycle-block graphs passed (seed=20260906)
+
+python zero_forcing_extended_audits.py --package .
+  Restricted replacement: 69806
+  Marked clique words: 87380
+  Decorated blocks: {'decorated_cliques': 80, 'decorated_arbitrary_blocks': 80, 'maximum_total_order': 13}
+  status: ALL INDEPENDENT CHECKS PASSED
+  rank-four determinant ascending coefficients: [0, 0, 0, 0, 0, 0, 4, 8, 4]
