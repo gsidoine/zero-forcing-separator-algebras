@@ -38,4 +38,9 @@ Add the final arXiv identifier as an “is supplement to” / “is related to�
 
 ## DOI / URL workflow
 
-After depositing the exact public-supplement ZIP, record the immutable archive DOI/URL. If you then insert that identifier into the manuscript or `CITATION.cff`, rebuild the PDF/package and regenerate `SHA256SUMS.txt`; otherwise leave the deposited archive immutable and supply the DOI in journal/arXiv metadata only.
+The public repository is https://github.com/gsidoine/zero-forcing-separator-algebras. After creating the first immutable release, record its tag/commit and archival DOI/URL. If you then insert that identifier into the manuscript or `CITATION.cff`, rebuild the PDF/package and regenerate `SHA256SUMS.txt`; otherwise leave the deposited archive immutable and supply the DOI in journal/arXiv metadata only.
+
+
+## Public repository
+
+https://github.com/gsidoine/zero-forcing-separator-algebras

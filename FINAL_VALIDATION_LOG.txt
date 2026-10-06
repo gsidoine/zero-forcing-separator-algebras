@@ -1,24 +1,37 @@
-FINAL VALIDATION LOG — editorial revision 2026-10-05
+FINAL PRE-SUBMISSION VALIDATION — 2026-10-06
 
-Manuscript
-- LaTeX source compiled successfully with pdfLaTeX in three passes.
-- PDF pages: 46.
-- PDF opens normally, is unencrypted, and is text-based.
-- All cross-references resolved after the final pass.
-- Rendered all 46 pages at 120 dpi; contact-sheet inspection found no clipping, black boxes, or broken layout.
-- The abstract, introduction, verification section, discussion, and appendix were rewritten/compressed; the central mathematical theorem and proof sections were retained.
+separator rank certificate
+certificate: separator_rank_certificate.json
+chain states q=2: 52
+independent: coefficient-span rank 52, rank mod 1000003 at x=2 52, minor determinant 807954
+edge_present: coefficient-span rank 44, rank mod 1000003 at x=2 44, minor determinant 824792
+edge_mobius: coefficient-span rank 16, rank mod 1000003 at x=2 16, minor determinant 6561
+full q=2 rank: 60
+separator-rank certificate verified
 
-Independent mathematical checks rerun after the editorial revision
-- separator-rank certificate: VERIFIED (q=2 ranks 52, 44, 16, full rank 60).
-- cycle automaton certificate: VERIFIED (100 generated matrices, 32 quotient states, 496 distinguishing pairs).
-- separator audit: PASSED (chain counts, q=2 worked example, all 52 q=2 chain realizations, sampled q=3 realizations, 8192 join-closure checks).
-- independent extended audit: ALL INDEPENDENT CHECKS PASSED; rank-four connection minor determinant = 4 x^6 (x+1)^2.
+cycle automaton certificate
+certificate verified: cycle_automaton_certificate.json
+generated monoid size: 100
+reachable quotient states: 32
+distinguishing pairs: 496
+embedded algorithm table verified: zero_forcing_cactus_dp.py
+file sha256: c0fbcf130f0083b875537ffd7d4100d7a9c02397ac149e1681ff4e27bab30dc9
 
-Editorial changes
-- article reduced from 53 to 46 pages;
-- noncentral closed-form examples removed from the main article;
-- printed 32-state automaton table removed (the complete certificate remains in the supplement);
-- general bounded-width, verification, discussion, and data/code prose shortened;
-- no central theorem statement or central proof was weakened or removed.
+separator audits
+separator algebra audits
+  chain counts: [1, 4, 52, 1636, 95668, 8977444, 1234728052, 234059341156]
+  q=2 rank certificate: {'prime': 1000003, 'chain_count_q2': 52, 'independent_boundary_coefficient_span_rank_Q': 52, 'edge_boundary_coefficient_span_rank_Q': 44, 'edge_mobius_coefficient_span_rank_Q': 16, 'full_coefficient_span_rank_Q': 60, 'independent_boundary_rank_mod_p_at_x_2': 52, 'edge_boundary_rank_mod_p_at_x_2': 44, 'edge_mobius_correction_rank_mod_p_at_x_2': 16, 'full_rank_mod_p_at_x_2': 60, 'full_coefficient_ranks_mod_p': (60, 30, 6)}
+  worked q=2 example: {'H_atoms': [(1, 1), (2, 2)], 'K_atoms': [(2, 2)], 'kernel_coefficients': (0, 2, 1), 'direct_coefficients': (0, 2, 1)}
+  q=2 chain realizations: 52
+  q=3 sampled chain realizations: 40
+  compatibility join-closure checks: 8192
+all separator audits passed
 
-The package checksum manifest was regenerated after these changes.
+PDF preflight:
+PDF: /mnt/data/final_2026_10_06/zero_forcing_separator_algebras_submission_package_editorial_2026-10-05/zero_forcing_separator_algebras.pdf
+Pages: 46
+Encrypted: False
+Openable (PyMuPDF): True
+Likely scanned: False
+XFA present: False
+

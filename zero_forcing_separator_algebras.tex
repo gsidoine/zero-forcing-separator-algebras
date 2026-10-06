@@ -78,8 +78,8 @@
 for the zero-forcing polynomial}
 
 \author{Guillaume Sidoine}
-\address{Independent researcher, Mauritius}
-\thanks{ORCID: 0009-0005-4525-1182.}
+\address{Independent researcher\\
+\href{https://orcid.org/0009-0005-4525-1182}{ORCID: 0009-0005-4525-1182}}
 
 \subjclass[2020]{05C31, 05C50, 05C76, 05C85, 68R10}
 \keywords{zero forcing, graph polynomial, separator, connection matrix, graph algebra, fort, transfer algebra, block decomposition}
@@ -101,7 +101,7 @@ $\{0,1,\mathsf I\}^q\setminus\{0^q\}$.  We give the exact rule for gluing two
 local families and express the boundary choice as a transversal problem on the
 resulting fort traces.  The corresponding connection kernels admit a M\"obius
 compression indexed by chains.  Every chain state is realized by a finite
-simple graph, so the finite chain kernel has the same rank as the infinite
+simple graph, so the finite chain-edge kernel has the same rank as the infinite
 zero-forcing connection matrix.
 
 For an independent boundary this rank is the number $c_q$ of chains in
@@ -147,11 +147,14 @@ The static obstruction is a fort.  A nonempty set $F$ is a fort if no vertex
 outside $F$ has exactly one neighbour in $F$, and a set is zero forcing if and
 only if it meets every fort \cite{AIM2008}.  The fort hypergraph and its
 transversals have been studied in their own right
-\cite{CameronHogbenEtAl2026}.  Recent work also counts inclusion-minimal forts,
-including the linear-time tree algorithm of Abiad and Ghasemi Nezhad
-\cite{BeckerEtAl2025,CameronLi2025,DatKenter2026,AbiadGhasemiNezhad2026}.
-That is a different counting problem.  Here the object being counted is every
-subset that meets every fort, with its cardinality retained.
+\cite{CameronHogbenEtAl2026}.  Recent work studies the enumeration of
+inclusion-minimal forts \cite{BeckerEtAl2025,CameronLi2025,DatKenter2026}; in
+particular, Abiad and Ghasemi Nezhad give a linear-time, linear-space algorithm
+for trees \cite{AbiadGhasemiNezhad2026}.  That is a different counting problem.
+Here the object being counted is every subset that meets every fort, with its
+cardinality retained.  Wang \cite{Wang2026} studies modular compression for
+leaky forcing polynomials on graphs of bounded neighborhood diversity, using
+twin/type classes rather than an interface over an arbitrary separator.
 
 Let $B$ be a separator of order $q$.  We impose the fort condition away from
 $B$ and call the resulting object a prefort.  At a boundary vertex only three
@@ -2852,12 +2855,21 @@ supplement identifies the files used for the reported calculations.
 The supplementary archive contains the source code, the two certificate files
 and their verifiers, the separator-realization audits, the rooted/tree/block/
 cycle implementations, pinned dependencies, expected outputs, and a checksum
-manifest.  No external data set is used.  The complete audit is run with
+manifest.  The complete audit is run with
 \texttt{python run\_all\_audits.py}.  The release environment used for the
 final audit was Python~3.13.5, NetworkX~3.6.1, and pdf\TeX{} 1.40.26
-(TeX Live 2025/dev).  A permanent repository or archival DOI, once assigned,
-should point to the checksum-verified supplement distributed with this
-manuscript.
+(TeX Live 2025/dev).  The checksum-verified source code, certificates, verifiers, and audit scripts
+are available in the
+\href{https://github.com/gsidoine/zero-forcing-separator-algebras}{public GitHub repository}.
+No external data set is used.
+
+\section*{AI assistance}
+
+During the development and revision of this work, the author used OpenAI's
+ChatGPT, including GPT-6 Astra, as an auxiliary tool for exploratory proof
+development and checking, computational code review, literature searches, and
+editorial revision.  The author takes full responsibility for the mathematical
+arguments, computations, citations, and final text.
 
 \section*{Acknowledgements}
 

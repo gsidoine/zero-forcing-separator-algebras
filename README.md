@@ -81,7 +81,7 @@ See [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md) for the complete audit procedure.
 
 ## Citation
 
-GitHub can read the repository's `CITATION.cff`. A permanent archive DOI will be added after the first archival release. The article's arXiv identifier will also be added once assigned.
+GitHub can read the repository's `CITATION.cff`. Repository: https://github.com/gsidoine/zero-forcing-separator-algebras. A permanent archive DOI will be added after the first archival release. The article's arXiv identifier will also be added once assigned.
 
 ## License
 
@@ -93,3 +93,8 @@ The manuscript is not covered by the MIT License. See `LICENSE-PAPER.md`.
 
 Guillaume Sidoine  
 ORCID: 0009-0005-4525-1182
+
+
+## Current release candidate
+
+The 2026-10-06 snapshot contains the final pre-submission manuscript, including the public repository link, the final literature-positioning edits, and the AI-assistance disclosure. The certificate and audit results are unchanged.
